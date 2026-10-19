@@ -1,44 +1,15 @@
 # AndroidGAME
 
-Laboratorio per progettare, validare e, solo dopo, sviluppare un gioco Android commerciale realizzabile da uno sviluppatore con assistenza AI e budget ridotto.
+**Stato: progettazione di un city builder con gameplay attivo.**
 
-## Stato
-**FASE 0 — selezione del gioco.** Nessun concept, motore o modello di monetizzazione è ancora approvato. Non iniziare a sviluppare un gioco specifico senza averlo selezionato.
+Il gioco ruota attorno alla **crescita e specializzazione libera di una città**, usando risorse raccolte tramite modalità e minigiochi attivi (anche action). **Nessun timer per costruire**: se hai le risorse, migliori subito.
 
-## Obiettivo
-Individuare un gioco **divertente, distintivo, piccolo da produrre e sostenibile economicamente**, con una meccanica riconoscibile in pochi secondi e possibilità di promozione organica.
+- Upgrade numerosi, rami alternativi, stili PvE/PvP/economia e città differenti tra giocatori.
+- Monetizzazione commerciale ma non forzata: rewarded ads facoltative con ricompense extra; IAP non eccessivamente pay-to-win.
+- **Android prioritario**, compatibilità PC auspicabile con sforzo contenuto.
+- Sviluppatore singolo, senza asset né competenze di programmazione; AI e budget minimo.
+- Priorità assoluta: **gioco bello da giocare, distinguibile, pubblicizzabile e capace potenzialmente di generare ricavi**.
 
-## Vincoli di progetto
-- Sviluppatore singolo assistito da AI.
-- Budget iniziale minimo; strumenti e asset gratuiti ove consentito per uso commerciale.
-- Android come prima piattaforma.
-- Gameplay immediato ma con vera difficoltà e rigiocabilità.
-- No copie generiche di giochi saturi e no semplice reskin.
-- No server e multiplayer in V1, salvo ragioni dimostrate.
-- No false promesse pubblicitarie, pay-to-win obbligatorio o matematica superficiale come meccanica centrale.
-- Risposte e documentazione: concise, concrete, distinguendo dati verificati da ipotesi.
+**Documento di riferimento:** [PROGETTO.md](PROGETTO.md) — requisiti confermati, ipotesi, monetizzazione, piattaforme, marketing e roadmap.
 
-## Processo decisionale
-1. **Ricerca**: individuare nicchie e giochi comparabili, esperienze dei giocatori, pubblicità e modelli di ricavo. Registrare fonti, date e limiti dei dati.
-2. **Selezione**: confrontare candidati su divertimento, differenziazione, saturazione, complessità, costi, monetizzazione e potenziale di video organici.
-3. **Prototipo**: creare solo la meccanica principale del candidato migliore, senza menu o sistemi superflui.
-4. **Test**: far giocare persone esterne e misurare comprensione, desiderio di riprovare e problemi.
-5. **Produzione**: espandere solo un prototipo promettente; poi ads/IAP, analytics, pubblicazione e marketing.
-
-## Scheda obbligatoria per ogni idea
-- **Hook**: cosa rende immediatamente interessante il gioco?
-- **Core loop**: cosa fa davvero il giocatore ogni 10 secondi?
-- **Unicità**: perché preferirlo alle alternative esistenti?
-- **Competitor**: giochi reali simili, recensioni, punti deboli e fonti.
-- **Fattibilità**: sistemi, asset, rischi tecnici, tempi stimati.
-- **Business**: ads/IAP coerenti col gameplay, costi, canali di acquisizione.
-- **Prova rapida**: criterio misurabile per continuare o scartare.
-
-## Decisioni aperte
-- Genere e concept finale.
-- Motore (Unity / Godot / altro) in base al prototipo.
-- Direzione artistica.
-- Monetizzazione definitiva, da validare dopo il gameplay.
-
-## Prossimo deliverable
-Shortlist ragionata di idee realmente fattibili, con concorrenti verificati e una raccomandazione motivata. Nessun concept è imposto in anticipo.
+Le funzionalità PvP online, il motore, lo stile grafico, i minigiochi esatti e i prezzi non sono ancora decisi.
