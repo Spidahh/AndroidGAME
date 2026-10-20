@@ -1,7 +1,7 @@
 # M1 — La Corsa (corsa tra le corsie)
 
 Progetto di dettaglio del minigioco M1, 20 ottobre 2026.
-Legenda: ✅ = deciso da te, 🔶 = mia proposta in attesa del tuo sì o no. **Tutto ciò che non è segnato ✅ è una proposta.**
+Legenda: ✅ = deciso da te. **Stato: approvato dall'utente il 20/10/2026 («ok», U14), compreso il telefono in verticale.**
 
 ✅ **Richieste dell'utente** (DECISIONI U11, U13):
 - si corre tra le corsie;
@@ -15,7 +15,7 @@ Legenda: ✅ = deciso da te, 🔶 = mia proposta in attesa del tuo sì o no. **T
 
 ## 1. L'idea in una riga
 
-🔶 **Corri in una strada invasa, spari sempre davanti a te nella tua corsia: scegliere la corsia vuol dire scegliere cosa colpire e cosa evitare. Gli oggetti migliori vanno conquistati sparandogli a lungo, mentre il pericolo si avvicina.**
+✅ **Corri in una strada invasa, spari sempre davanti a te nella tua corsia: scegliere la corsia vuol dire scegliere cosa colpire e cosa evitare. Gli oggetti migliori vanno conquistati sparandogli a lungo, mentre il pericolo si avvicina.**
 
 Il cuore è questo: **la corsia è la mira.**
 - Stare in una corsia per aprire la cassa dell'arma ti espone agli zombie che arrivano lì.
@@ -107,7 +107,7 @@ Si ottengono dalle casse arma durante il livello. Se ne porta **una alla volta**
 
 ✅ Personaggi controllabili e collezionabili (requisito v2).
 
-🔶 In M1 si sceglie **il personaggio che corre**. Ognuno ha un'**abilità**, per esempio:
+✅ In M1 si sceglie **il personaggio che corre**. Ognuno ha un'**abilità**, per esempio:
 - **granata:** apre subito la cassa davanti;
 - **scatto:** attraversa un ostacolo;
 - **richiamo:** fa venire un compagno extra;
@@ -119,7 +119,7 @@ Come si ottengono e come crescono si decide quando definiamo i personaggi per tu
 
 ## 8. Struttura di un livello
 
-🔶 Ogni livello dura **1,5–2,5 minuti** ed è **disegnato a mano**, non generato a caso:
+✅ Ogni livello dura **1,5–2,5 minuti** ed è **disegnato a mano**, non generato a caso:
 1. **Partenza tranquilla** (5–10 s): primi zombie, una cassa facile.
 2. **Tre o quattro "scene"**: ognuna mette davanti **una scelta**. Esempi:
    - cassa arma a sinistra con orda in arrivo, gabbia a destra dietro una barricata: cosa prendi per primo?
@@ -150,13 +150,13 @@ Come si ottengono e come crescono si decide quando definiamo i personaggi per tu
 
 Armi, compagni e potenziamenti raccolti **valgono solo per quel livello**: ogni partita riparte dalla pistola, ed è questo che rende ogni corsa una sfida di scelte.
 
-🔶 **Collegamento con la città** (da definire con la città): un edificio come l'Armeria potrebbe far partire con un'arma diversa o aprire le casse un po' più in fretta. Sempre con risorse di gioco, mai a pagamento (U7).
+✅ **Collegamento con la città** (da definire con la città): un edificio come l'Armeria potrebbe far partire con un'arma diversa o aprire le casse un po' più in fretta. Sempre con risorse di gioco, mai a pagamento (U7).
 
 ---
 
 ## 10. Quantità
 
-🔶 **Al lancio:**
+✅ **Al lancio:**
 - **40 livelli** disegnati a mano, divisi in 4 zone di città: periferia, centro, porto, zona industriale;
 - **una modalità infinita** con classifica, che riusa le scene dei livelli.
 

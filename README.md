@@ -1,11 +1,15 @@
 # AndroidGAME
 
-Gioco Android free-to-play a tema zombie: corse contro le orde e una città da ricostruire e difendere.
-**Stato:** progetto rifatto da zero il 20/10/2026, in attesa dell'approvazione dell'utente. Nessun codice: si scrive solo dopo l'approvazione.
+**Holdout City — Real Ad Games**: i minigiochi delle pubblicità resi veri e fissi, più una città zombie da ricostruire che si espande nel tempo.
+**Stato:** progetto completo il 20/10/2026. Nessun codice finché l'utente non dà il via alla fase 1.
 
 | Documento | Contenuto |
 |---|---|
-| [docs/PROGETTO.md](docs/PROGETTO.md) | **Il gioco**: cosa realizziamo, come si gioca, come deve essere, come guadagna, come lo realizziamo. ✅ = deciso, 🔶 = proposta |
+| [docs/PROGETTO.md](docs/PROGETTO.md) | **Indice del gioco**: cos'è e dove sono i dettagli. ✅ = deciso dall'utente, 🟦 = deciso dall'AI su delega |
+| [docs/M1-CORSA.md](docs/M1-CORSA.md), [docs/M2-BARRICATA.md](docs/M2-BARRICATA.md), [docs/M3-M5-ROMPICAPO.md](docs/M3-M5-ROMPICAPO.md) | I minigiochi |
+| [docs/CITTA.md](docs/CITTA.md) | Città, personaggi, economia, primo accesso |
+| [docs/GUADAGNO.md](docs/GUADAGNO.md) | Pubblicità facoltative e i 5 prodotti, scenari di ricavo |
+| [docs/REALIZZAZIONE.md](docs/REALIZZAZIONE.md) | Nome, tecnologia, asset, fasi, cosa fa l'utente, regole, promozione |
 | [docs/DECISIONI.md](docs/DECISIONI.md) | Registro delle decisioni dell'utente, con le sue parole |
 | [docs/RICERCA.md](docs/RICERCA.md) | Fatti verificati con fonte: mercato, pubblicità, regole, tecnologia, asset, canali, nomi |
 | [CLAUDE.md](CLAUDE.md) | Regole per le sessioni AI |

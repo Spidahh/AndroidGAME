@@ -102,6 +102,8 @@ Nessuna di queste informazioni è una decisione sul gioco.
 - **King of Avalon:** le battaglie di difesa mostrate nelle pubblicità sono diventate una **campagna permanente** che dà premi al gioco principale. Stessa fonte.
 - **Royal Match:** i livelli "King's Nightmare" delle pubblicità sono ricorrenti nel gioco. Stessa fonte.
 - **Those Games (D3 Publisher, 2023) e Those Games 2:** raccolta dei minigiochi delle pubblicità (Color Lab, Pin Pull, Number Tower, Parking Lot, Cash Run nel primo; altri 4 nel secondo). Venduta a 9,99 $ su Switch e Steam, poi anche su PlayStation. Stile a omini stilizzati, nessuna versione mobile, nessuna città. Fonti: https://en.wikipedia.org/wiki/Those_Games · https://nichegamer.com/those-games-collection-out/
+- **Those Games 2:** secondo la recensione di Siliconera, dopo i primi 10 livelli i livelli diventano davvero impegnativi. Fonte: https://siliconera.com/?p=1045165
+- **Rapier 2D:** motore fisico 2D (versione 0.21.0 su npm il 20/10/2026). Alternativa: planck.js 1.5.1, pubblicato il 12/10/2026. Fonte: https://registry.npmjs.org/@dimforge/rapier2d-compat
 
 ## 9. Nomi controllati (ricerca web, non ricerca di marchi registrati)
 
