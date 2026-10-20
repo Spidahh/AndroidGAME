@@ -1,4 +1,6 @@
 # AndroidGAME
+**MASTER V4 (city-first, UX, economie, asset, retention e business): [docs/MASTER-PRODOTTO-BUSINESS-V4.md](docs/MASTER-PRODOTTO-BUSINESS-V4.md)**
+
 
 **SPECIFICA DI PRODOTTO UNIFICATA (aggiornata 20/10/2026): [docs/PRODOTTO-UNIFICATO.md](docs/PRODOTTO-UNIFICATO.md)** — fonte operativa per gameplay, durata dei minigiochi, corse, città, personaggi, economia, AFK, pubblicità, monetizzazione, roadmap e controlli qualità. In caso di conflitto progettuale con gli altri documenti AI, consultare questa sintesi e il registro delle decisioni dell'utente. Il target 40+40+240 livelli è backlog, non requisito di lancio.
 
