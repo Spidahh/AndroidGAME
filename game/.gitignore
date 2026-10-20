@@ -1,0 +1,9 @@
+node_modules/
+dist/
+site/
+test-results/
+playwright-report/
+# modelli originali: si riscaricano con tools/fetch-assets.mjs (manifest versionato)
+assets-src/**/*.glb
+.env*
+!.env.example

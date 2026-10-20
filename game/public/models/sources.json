@@ -1,0 +1,142 @@
+{
+  "hero_matt": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Characters_Matt__66kQ4dBBC7.glb",
+    "polypizza": "https://poly.pizza/m/66kQ4dBBC7"
+  },
+  "hero_lis": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Lis__gjuwleUT1U.glb",
+    "polypizza": "https://poly.pizza/m/gjuwleUT1U"
+  },
+  "hero_sam": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Characters_Sam__UcLErL2W37.glb",
+    "polypizza": "https://poly.pizza/m/UcLErL2W37"
+  },
+  "hero_shaun": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Characters_Shaun__eJFT9MxzOM.glb",
+    "polypizza": "https://poly.pizza/m/eJFT9MxzOM"
+  },
+  "hero_soldier": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Character_Soldier__PpLF4rt4ah.glb",
+    "polypizza": "https://poly.pizza/m/PpLF4rt4ah"
+  },
+  "hero_hazmat": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Character_Hazmat__z3TSQYx1Kn.glb",
+    "polypizza": "https://poly.pizza/m/z3TSQYx1Kn"
+  },
+  "hero_enemy": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Character_Enemy__mdGe4IN31v.glb",
+    "polypizza": "https://poly.pizza/m/mdGe4IN31v"
+  },
+  "zombie_basic": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Zombie__22K0aSZkHV.glb",
+    "polypizza": "https://poly.pizza/m/22K0aSZkHV"
+  },
+  "zombie_chubby": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Zombie__VlXjG0N8Eg.glb",
+    "polypizza": "https://poly.pizza/m/VlXjG0N8Eg"
+  },
+  "zombie_arm": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Big_arm__KaVJET0WHx.glb",
+    "polypizza": "https://poly.pizza/m/KaVJET0WHx"
+  },
+  "zombie_half": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Zombie_half__Htcsn9OrXJ.glb",
+    "polypizza": "https://poly.pizza/m/Htcsn9OrXJ"
+  },
+  "dog": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/German_Shepard__Hssa6NPc6W.glb",
+    "polypizza": "https://poly.pizza/m/Hssa6NPc6W"
+  },
+  "gun_pistol": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Pistol__Yp4GwKdHHO.glb",
+    "polypizza": "https://poly.pizza/m/Yp4GwKdHHO"
+  },
+  "gun_smg": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Smg__sRkpgScNzi.glb",
+    "polypizza": "https://poly.pizza/m/sRkpgScNzi"
+  },
+  "gun_shotgun": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Shotgun__8Z4HaN1NyS.glb",
+    "polypizza": "https://poly.pizza/m/8Z4HaN1NyS"
+  },
+  "gun_rifle": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Rifle__KjHL5JJrxU.glb",
+    "polypizza": "https://poly.pizza/m/KjHL5JJrxU"
+  },
+  "street": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Street_Straight__UA4axT3nIQ.glb",
+    "polypizza": "https://poly.pizza/m/UA4axT3nIQ"
+  },
+  "street_crack1": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Street_Straight_Crack__P4BaLlrAIM.glb",
+    "polypizza": "https://poly.pizza/m/P4BaLlrAIM"
+  },
+  "street_crack2": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Street_Straight_Crack__l7c8pppfFj.glb",
+    "polypizza": "https://poly.pizza/m/l7c8pppfFj"
+  },
+  "barrel": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Barrel__MraIiFnpAY.glb",
+    "polypizza": "https://poly.pizza/m/MraIiFnpAY"
+  },
+  "chest": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Chest__RfSBvgcZUD.glb",
+    "polypizza": "https://poly.pizza/m/RfSBvgcZUD"
+  },
+  "chest_special": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Chest__vXaxy7ortM.glb",
+    "polypizza": "https://poly.pizza/m/vXaxy7ortM"
+  },
+  "barrier_plastic": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Plastic_Barrier__QAiXMsbWRc.glb",
+    "polypizza": "https://poly.pizza/m/QAiXMsbWRc"
+  },
+  "barrier_traffic": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Traffic_Barrier__cM3aJPU9NS.glb",
+    "polypizza": "https://poly.pizza/m/cM3aJPU9NS"
+  },
+  "cone": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Traffic_Cone__VGvQupNGtK.glb",
+    "polypizza": "https://poly.pizza/m/VGvQupNGtK"
+  },
+  "container_red": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Container_Red__vzzCNUB6Zn.glb",
+    "polypizza": "https://poly.pizza/m/vzzCNUB6Zn"
+  },
+  "container_green": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Container_Green__h5RUr3vlcS.glb",
+    "polypizza": "https://poly.pizza/m/h5RUr3vlcS"
+  },
+  "streetlight": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Street_Light__0lxF8Dl1jU.glb",
+    "polypizza": "https://poly.pizza/m/0lxF8Dl1jU"
+  },
+  "trash_bags": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Trash_Bags__eitNk4I4R1.glb",
+    "polypizza": "https://poly.pizza/m/eitNk4I4R1"
+  },
+  "pallet": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Pallet__MwOFAOgOhg.glb",
+    "polypizza": "https://poly.pizza/m/MwOFAOgOhg"
+  },
+  "cinder": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Cinder_Block__lLkVKoJsKm.glb",
+    "polypizza": "https://poly.pizza/m/lLkVKoJsKm"
+  },
+  "wheels": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Wheels_Stack__o1MJrkMUPN.glb",
+    "polypizza": "https://poly.pizza/m/o1MJrkMUPN"
+  },
+  "hydrant": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Fire_Hydrant__DKkMQbEklp.glb",
+    "polypizza": "https://poly.pizza/m/DKkMQbEklp"
+  },
+  "couch": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Damaged_Couch__ik7UZdELJE.glb",
+    "polypizza": "https://poly.pizza/m/ik7UZdELJE"
+  },
+  "watertower": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Water_Tower__tMK8bhapAK.glb",
+    "polypizza": "https://poly.pizza/m/tMK8bhapAK"
+  }
+}
