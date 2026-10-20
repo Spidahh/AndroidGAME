@@ -41,7 +41,7 @@ Elenco dei minigiochi tipici delle pubblicità, con la fonte che li documenta e 
 
 | # | Minigioco (come appare nelle ads) | Fonte | 🔶 Versione nel nostro gioco | Matematica? |
 |---|---|---|---|---|
-| M1 | **Corsa tra le corsie**: il personaggio si sposta fra le corsie evitando ostacoli e nemici | ✅ richiesto da te | Il sopravvissuto corre in una strada a 3 corsie: schiva auto, barricate e zombie, raccoglie oggetti, spara. Niente porte a numeri | No |
+| M1 | **Corsa tra le corsie**: il personaggio si sposta fra le corsie evitando ostacoli e nemici | ✅ richiesto da te, ✅ nel gioco (U13) | **Progetto di dettaglio: [M1-CORSA.md](M1-CORSA.md)** | No |
 | M2 | **Tower defense**: difendere una base da ondate di nemici | ✅ richiesto da te | Piazzi torrette e barricate lungo la strada che porta al rifugio, le ondate di zombie arrivano, potenzi e riposizioni | No |
 | M3 | **Tira il perno**: togliere i perni nell'ordine giusto per salvare il personaggio (lava, acqua, nemici, tesoro) | Penn State, Udonis | Togli i perni per far cadere gli zombie nella trappola e portare i viveri al sopravvissuto | No |
 | M4 | **Disegna la protezione**: tracciare con il dito una barriera per proteggere qualcuno | GameRefinery (X-Hero) | Disegni un muro per proteggere i sopravvissuti dall'orda per 10 secondi | No |

@@ -18,6 +18,7 @@ Registro delle decisioni prese dall'utente, con le sue parole. Solo ciò che è 
 | U10 | Rifare tutto da zero: cosa realizzare, come, come deve essere | «voglio che mi dici che dobbiamo realizzare, come e come deve essere» |
 | U11 | **Il gioco:** i minigiochi delle pubblicità, quelli che tutti vogliono giocare, fissi nel gioco e non solo come intro: la corsa tra le corsie, una specie di tower defense, nessuna operazione matematica; più una città da gestire che si espande con il tempo | «tutte le ads che vedi, quello che si deve muovere tra le corsie, senza operazioni matematiche, una specie di tower defence, e tutte le pubblicità che si vedono di solito che tutti vogliono giocare, e questi minigiochi devono essere fissi nel gioco non solo come intro […] oltre a gestire una città che si espande con il tempo» |
 | U12 | Scartata la proposta "Corsa + Notte" | «non mi piace» |
+| U13 | **M1 (corsa tra le corsie)** entra nel gioco e deve essere fatto bene: oggetti a cui devi sparare tanto per prenderli, scelte da fare, cose intelligenti, niente di scadente | «m1 deve essere fatto bene, con oggetti che devi spararci tanto per prenderli, scelte da fare, cose intelligenti, non fare cose scadenti» |
 
 ## Requisiti riportati dal piano precedente (v2)
 
