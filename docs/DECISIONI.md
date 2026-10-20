@@ -20,6 +20,7 @@ Registro delle decisioni prese dall'utente, con le sue parole. Solo ciò che è 
 | U12 | Scartata la proposta "Corsa + Notte" | «non mi piace» |
 | U13 | **M1 (corsa tra le corsie)** entra nel gioco e deve essere fatto bene: oggetti a cui devi sparare tanto per prenderli, scelte da fare, cose intelligenti, niente di scadente | «m1 deve essere fatto bene, con oggetti che devi spararci tanto per prenderli, scelte da fare, cose intelligenti, non fare cose scadenti» |
 | U14 | M1 approvato; **delega all'AI di decidere tutto il resto**. Le decisioni dell'AI sono marcate 🟦 nei documenti e restano modificabili | «ok, decidi tutto il resto» |
+| U15 | **M1 fase 2 bocciato.** Scelte senza senso, pochi nemici, nessuna difficoltà, danni non proporzionati, regole inutili. **Un alleato preso deve stare nella tua corsia**, con te. Deve essere divertente: **copiare i giochi che funzionano**, niente cose casuali | «è una merda, le scelte […] non hanno senso, non ci sono nemici, devi avere delle difficoltà, i danni non sono proporzionati […] se prendi un alleato deve rimanere nella tua line […] copia altri giochi, serve divertirsi» |
 
 ## Requisiti riportati dal piano precedente (v2)
 
