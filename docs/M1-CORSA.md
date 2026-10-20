@@ -1,180 +1,177 @@
-# M1 — La Corsa (corsa tra le corsie)
+# M1 — La Corsa (versione 2)
 
-Progetto di dettaglio del minigioco M1, 20 ottobre 2026.
-Legenda: ✅ = deciso da te. **Stato: approvato dall'utente il 20/10/2026 («ok», U14), compreso il telefono in verticale.**
+20 ottobre 2026. Sostituisce la versione 1, bocciata dall'utente (DECISIONI U15). La v1 resta nella cronologia git.
+Metodo (CLAUDE.md, regola 9): **analisi dei giochi di riferimento → regole e numeri motivati → prototipo grezzo misurato → test dell'utente**. Niente codice finché questo documento non è approvato.
 
-✅ **Richieste dell'utente** (DECISIONI U11, U13):
-- si corre tra le corsie;
-- nessuna operazione matematica;
-- **oggetti a cui devi sparare tanto per prenderli**;
-- **scelte da fare**;
-- **cose intelligenti**;
-- fatto bene, niente di scadente.
+Legenda:
+- **[OSSERVATO]** = scritto nella fonte citata;
+- **[COPIATO]** = meccanica presa da un riferimento;
+- **[PARAMETRO]** = numero di partenza che il prototipo deve confermare o correggere.
 
 ---
 
-## 1. L'idea in una riga
+## 1. Analisi dei giochi di riferimento
 
-✅ **Corri in una strada invasa, spari sempre davanti a te nella tua corsia: scegliere la corsia vuol dire scegliere cosa colpire e cosa evitare. Gli oggetti migliori vanno conquistati sparandogli a lungo, mentre il pericolo si avvicina.**
+Base: lo studio [STUDIO-MINIGIOCHI-REALI.md](../STUDIO-MINIGIOCHI-REALI.md), §1–2 e §9, con le stesse fonti, rilette il 20/10/2026.
 
-Il cuore è questo: **la corsia è la mira.**
-- Stare in una corsia per aprire la cassa dell'arma ti espone agli zombie che arrivano lì.
-- Spostarti ti salva, ma lasci la cassa a metà.
+**Differenza voluta rispetto a quello studio:** lo studio propone un solo eroe con al massimo due aiutanti e niente soldati da moltiplicare. Qui invece **la squadra cresce davvero**, come in Frontline Breakthrough, perché l'utente ha chiesto che gli alleati stiano con lui nella sua corsia (U15). Resta escluso solo il moltiplicatore con numeri (+N, ×N).
 
-Ogni secondo c'è una decisione vera, senza numeri da calcolare.
+### 1.1 Last War — *Frontline Breakthrough* (la corsa delle pubblicità di Last War)
+Fonti: [LDShop](https://www.ldshop.gg/blog/last-war-survival/last-war-frontline-breakthrough-guide.html) · [Heaven Guardian](https://heaven-guardian.com/last-war-frontline-breakthrough-guide/) · [VirgoVixen](https://www.virgovixen.info/events/frontline-breakthrough/) · [Reddit r/LastWarMobileGame](https://www.reddit.com/r/LastWarMobileGame/comments/1s68v67/the_secret_of_frontline_breaktrough/)
+
+[OSSERVATO]:
+- **Comando:** si sposta lateralmente una formazione di soldati. Il movimento orizzontale preciso è indicato come la differenza principale fra partite medie e buone. Bisogna spostarsi **prima** di arrivare all'oggetto, perché dopo non c'è più spazio per correggere.
+- **La squadra è la risorsa centrale:** più soldati vuol dire più potenza di fuoco e più margine per gli ostacoli successivi.
+- **I barili** sono il bonus principale. Ce ne sono di tre tipi:
+  - danno soldati;
+  - danno armi, che distruggono più in fretta barriere e barili;
+  - mettono effetti negativi sui nemici.
+
+  I barili che aggiungono soldati sono i più importanti.
+- **Si perdono soldati** colpiti dai nemici, contro gli ostacoli, e buttandosi su gruppi di nemici senza l'arma adatta.
+- **Le deviazioni** verso barili di poco valore costano soldati.
+- **Struttura:** 5 tappe in sequenza con difficoltà crescente:
+  - tappe 1–2 per costruire l'esercito;
+  - tappa 3 per mantenere lo slancio;
+  - tappa 4 con percorsi più stretti e sequenze di barili più difficili;
+  - tappa 5, «il muro».
+- **Classifica:** conta quante tappe completi; a parità, quanti soldati arrivano vivi.
+- **Lamentele dei giocatori:** difficoltà incoerente, comandi poco precisi, video guida che non corrispondono ai danni reali.
+- **Moltiplicatori:** ci sono porte con +N e ×N. *Escluse per decisione dell'utente* (niente matematica, U11).
+
+### 1.2 Last Z — *Shooter Stages*
+Fonte: [Last Z Guides](https://lastzguides.com/shooter-stages.html)
+
+[OSSERVATO]:
+- **Formato:** livelli verticali a scorrimento, con zombie, ostacoli e bottino; si schiva l'orda sparando.
+- **Barili facoltativi:** danno soldati, potenziamenti d'arma o bonus. Si saltano se costano troppo.
+- **Porte a resistenza numerata:** **portarle a zero** dà bonus grandi, come abilità caricate o soldati. Passarci attraverso costa danni.
+- **Ostacoli indistruttibili** (punte, ruote che rotolano): fanno molto danno e vanno schivati, non colpiti.
+- **Fine livello:** ricompensa a fine tappa, che alimenta la crescita della base.
+
+### 1.3 Corse con la folla (Count Masters, Mob Control, Join Clash)
+Fonte: [Fake Ad Games](https://fakeadgames.com/archive/last-war-survival) e il mio studio di approfondimento (in corso).
+
+[OSSERVATO]:
+- **La folla è vita e forza insieme:** quando incontra un gruppo nemico, entrambe le parti perdono unità.
+- **Sconfitta:** si perde quando la folla arriva a zero.
+
+### 1.4 Cosa funziona in tutti, e lo copiamo
+1. **La squadra è vita e forza insieme.** Un solo numero che il giocatore capisce al volo e che vede crescere: [COPIATO] da tutti e tre.
+2. **Si spara a oggetti con un numero che scende**; a zero danno un premio: [COPIATO] da Last Z e Frontline.
+3. **Si perdono soldati in modo proporzionale** a cosa ti colpisce: [COPIATO].
+4. **Ostacoli indistruttibili da schivare** in anticipo: [COPIATO] da Last Z.
+5. **Le scelte sono di percorso:** quale barile prendere, a quale rinunciare, quando spostarsi prima che sia tardi: [COPIATO] da Frontline.
+6. **Difficoltà a tappe chiara:** prima costruisci, poi mantieni, poi precisione, poi il muro: [COPIATO] da Frontline.
+7. **Punteggio di fine livello** = soldati arrivati vivi: [COPIATO] da Frontline.
+
+### 1.5 Cosa evitiamo (difetti segnalati dai giocatori)
+- Difficoltà incoerente: la curva si misura con test automatici, non a occhio (§6).
+- Comandi imprecisi: cambio corsia istantaneo e prevedibile, oggetti grandi e leggibili.
+- Danni diversi da quelli mostrati: il numero sull'oggetto è esattamente il danno che manca, e il costo in soldati di ogni pericolo è fisso e coerente.
 
 ---
 
-## 2. Comandi e visuale
+## 2. Regole della Corsa v2
 
-| Cosa | Come |
-|---|---|
-| Visuale | Da dietro e un po' dall'alto, telefono in verticale: la strada si vede lunga davanti, così si legge cosa arriva |
-| Corsie | 3 corsie. In alcuni tratti la strada si allarga a 4 o si stringe a 2 |
-| Movimento | Scorri a destra o a sinistra: cambio corsia in 0,15 s, risposta immediata. Anche scorrimenti rapidi doppi (due corsie) |
-| Avanzata | Automatica. La velocità cresce piano piano nel livello |
-| Fuoco | Automatico e continuo, dritto nella tua corsia |
-| Abilità | Un pulsante per l'abilità del personaggio (§7), con ricarica |
+1. **Comando.** Si scorre per spostare la squadra fra **3 corsie**; il cambio è immediato, 0,1 s. Avanzata e fuoco sono automatici.
+2. **Squadra.** Tutti i soldati stanno **nella tua corsia**, in formazione dietro il capo (U15). Il numero dei soldati è sempre visibile sopra la squadra.
+3. **Fuoco.** Ogni soldato spara dritto nella corsia: la potenza totale è soldati × potenza dell'arma. Gli zombie nelle altre corsie non si colpiscono e non ti colpiscono.
+4. **Perdere soldati** (numeri fissi, mostrati da un'etichetta "−N" quando succede):
+   - **zombie normale** che ti raggiunge: −1;
+   - **veloce:** −1;
+   - **corazzato:** −3;
+   - **gigante:** −8;
+   - **ostacolo indistruttibile:** −5;
+   - **barile esploso** troppo vicino: −3.
+5. **Zero soldati** = sconfitta. Riprovare è gratis e immediato.
+6. **Oggetti da conquistare:** grandi, con un **numero** sopra che scende a ogni colpo. A zero si aprono:
+   - **Barile dei soldati:** +N soldati; il valore si vede prima di colpirlo;
+   - **Barile dell'arma:** l'arma della squadra sale di un livello (4 livelli);
+   - **Barile del gelo:** gli zombie in vista rallentano a metà velocità per 5 s. È l'"effetto negativo sui nemici" di Frontline;
+   - **Portone a numero:** sbarra una corsia. Portato a zero dà **+N soldati** e lascia passare; se ci sbatti contro con il numero ancora alto perdi soldati (−5);
+   - **Cassaforte:** una per livello, numero alto; dà bottino per la città (stella 2).
+7. **Ostacoli da schivare:** punte fisse e **ruote** che scendono lungo una corsia, annunciate da una freccia 1 s prima. Non si distruggono.
+8. **Fine livello:** un **muro** con un numero grande, mentre l'orda continua ad arrivare. Oppure, nei livelli 5 e 10, il **capo**: un gigante con un numero enorme e colpi annunciati sulle corsie.
+9. **Stelle:**
+   1. ★ arrivato;
+   2. ★ cassaforte aperta;
+   3. ★ arrivato con almeno la metà dei soldati massimi raccolti nel livello.
+10. **Tolto rispetto alla v1:** acido, recinzioni elettriche, zombie dai tetti, ladro, medicine, blindato, scatto, compagni in altre corsie, Scudati.
 
 ---
 
-## 3. Oggetti da conquistare sparando
+## 3. Nemici
 
-Ogni oggetto ha una **barra di resistenza** e si apre con le **crepe** che si allargano a ogni colpo. **Nessun numero**: si vede quanto manca guardando l'oggetto e la barra. Più l'oggetto è prezioso, più colpi servono e più tempo devi restare in quella corsia.
+| Nemico | Resistenza (livello 1) | Velocità verso di te | Soldati persi se ti raggiunge | Ruolo |
+|---|---:|---:|---:|---|
+| Zombie | 20 | 1,8 m/s | 1 | L'orda: tanti, deboli, da falciare |
+| Veloce | 14 | 4,0 m/s | 1 | Cambia corsia verso di te con una freccia 0,5 s prima: costringe a muoversi o a uccidere in fretta |
+| Corazzato | 120 | 1,4 m/s | 3 | Assorbe colpi: costringe ad avere un'arma buona o a cambiare corsia |
+| Gigante | 600 | 1,0 m/s | 8 | La minaccia grossa: va abbattuto da lontano o evitato |
+| Capo (L5, L10) | 12.000 / 30.000 | fermo davanti | colpi annunciati: −6 | Prova finale di potenza |
 
-| Oggetto | Resistenza | Cosa dà (dura per il livello) |
+Resistenza per livello: **×(1 + 0,15 × (livello − 1))** [PARAMETRO].
+
+## 4. Armi della squadra (salgono di livello con i barili arma)
+
+| Livello | Arma | Danno al secondo per soldato | Particolarità |
+|---|---|---:|---|
+| 1 | Pistole | 12 | — |
+| 2 | Mitra | 20 | — |
+| 3 | Fucili d'assalto | 32 | Attraversano 1 nemico |
+| 4 | Mitragliatrici pesanti | 50 | Attraversano 2 nemici |
+
+**Potenza della squadra** = soldati × danno al secondo dell'arma. Esempi:
+- 10 soldati con le pistole fanno 120 al secondo: un'orda di zombie (20 l'uno) cade al ritmo di 6 al secondo;
+- 30 soldati con i mitra fanno 600 al secondo: un gigante (600) cade in un secondo.
+
+## 5. Struttura e densità di un livello
+
+- **Durata:** 90–150 s [PARAMETRO]. Riferimento: le tappe di Frontline durano 1–2 minuti; da verificare nello studio in corso.
+- **Struttura:** 6–8 tratti da 40–60 m, ognuno con una **scelta di percorso** e un'**orda**.
+- **Orde:** da 20–30 zombie nei primi tratti fino a 60–100 nei livelli finali. **Obiettivo: almeno 30 zombie visibili per la maggior parte del tempo, picchi oltre 80** (richiesta dell'utente: «più nemici nello schermo»).
+- **Curva a tappe come Frontline**, ripetuta due volte nei 10 livelli:
+
+| Livello | Fase | Cosa chiede |
 |---|---|---|
-| **Cassa arma** | Alta | Un'arma nuova (§4). Sostituisce quella che hai: si sceglie |
-| **Gabbia del sopravvissuto** | Media | Un **compagno** che corre in una corsia accanto e spara nella sua (§5) |
-| **Cassa potenziamento** | Media | Uno fra: fuoco più rapido, colpi più forti, scudo per 1 colpo, colpo che attraversa |
-| **Cassa di bottino** | Bassa–alta | Risorse per la città: piccola, media o grande, si vede dalla dimensione |
-| **Cassaforte** | Molto alta, 1 per livello | Bottino grande o pezzo per sbloccare un personaggio. La vera sfida: si apre solo giocando bene |
-| **Barile** | Bassa | Esplode e colpisce anche le corsie vicine: apre casse, abbatte gruppi di zombie, rompe barricate |
+| 1, 6 | Costruire | Molti barili soldati, orde morbide |
+| 2, 7 | Mantenere | Orde più fitte, primi corazzati |
+| 3, 8 | Precisione | Ruote e punte, barili in posizioni rischiose |
+| 4, 9 | Pressione | Giganti, portoni a numero, veloci |
+| 5, 10 | Il muro | Capo finale |
 
-**Regole che rendono le scelte intelligenti:**
-- **Barile e casse.** Un barile accanto a una cassa la apre all'istante: chi lo nota risparmia molto tempo.
-- **Oggetti in movimento.** Alcuni sono su un'auto o un carrello e cambiano corsia: devi seguirli.
-- **Oggetti dietro le barricate.** Prima apri la strada, poi l'oggetto.
-- **Cassa lasciata a metà.** Resta danneggiata: se torni in quella corsia prima che sparisca dietro di te, riprendi da dove eri.
-- **Anteprima.** Gli oggetti si vedono in lontananza con la loro icona: sai cosa contengono prima di decidere.
+- **Budget di minaccia per tratto:** somma dei soldati che l'orda toglierebbe se arrivasse tutta = **1,2 × soldati attesi a quel punto** [PARAMETRO]. Senza falciare, perdi. Falciando bene, perdi poco.
+- **Valore dei barili per tratto:** in media **+0,4 × soldati attesi** [PARAMETRO]. Rinunciare ai barili per stare al sicuro porta ad arrivare al muro troppo deboli.
 
----
+## 6. Prototipo e criteri di accettazione (misurati, non a occhio)
 
-## 4. Armi: ognuna cambia il modo di giocare
+**Prototipo grezzo.** Solo regole e numeri di questo documento:
+- grafica semplice, nessun menu;
+- 3 livelli: uno di costruzione, uno di precisione, uno con il capo.
 
-Si ottengono dalle casse arma durante il livello. Se ne porta **una alla volta**: prenderne una nuova significa lasciare quella che hai. **Scelta vera:** l'arma giusta dipende da cosa sta arrivando.
+**Misure automatiche,** con tre giocatori simulati:
+- **bravo:** sceglie bene la corsia;
+- **medio:** reagisce in ritardo;
+- **a caso.**
 
-| Arma | Come spara | Forte contro | Debole contro |
-|---|---|---|---|
-| **Pistola** (iniziale) | Colpi singoli regolari | — | Tutto ciò che è resistente |
-| **Mitragliatrice** | Raffica velocissima, danno basso a colpo | Orde, casse | Zombie corazzati |
-| **Fucile a pompa** | Rosa larga: colpisce **anche le corsie vicine**, a corta distanza | Zombie che cambiano corsia, gruppi | Oggetti lontani |
-| **Fucile di precisione** | Lento, il colpo **attraversa tutta la corsia** | File di zombie, casse dietro i nemici | Orde veloci |
-| **Lanciafiamme** | Getto continuo corto, brucia nel tempo | Corazzati, bruti | Ciò che è lontano |
-| **Lanciagranate** | Esplosione ad area, lento | Gruppi, barricate | Corridori veloci |
-
----
-
-## 5. Compagni: crescere senza numeri
-
-- **Come arrivano:** liberando una gabbia, un sopravvissuto si unisce. Corre **nella corsia accanto** e spara in quella.
-- **Quanti:** al massimo **2 compagni**, così si coprono tutte e 3 le corsie.
-- **Come si vede la crescita:** con più compagni copri più strada e apri più cose insieme. Si vede, non si conta. È l'equivalente vero della "folla che cresce" delle pubblicità.
-- **Si possono perdere:** se uno zombie arriva nella corsia di un compagno, il compagno cade. **Scelta:** proteggerli spostandoti, oppure tenere la tua posizione.
-- **Posizione:** i compagni seguono la tua formazione. Se cambi corsia, cambiano anche loro, se c'è spazio.
-
----
-
-## 6. Zombie e pericoli
-
-| Nemico o pericolo | Comportamento | Come si affronta |
-|---|---|---|
-| **Vagante** | Lento, resta nella sua corsia | Fuoco normale |
-| **Corridore** | Veloce, **cambia corsia** con un segnale 0,5 s prima | Leggere il segnale, spostarsi o pompa |
-| **Bruto** | Resistentissimo, blocca la corsia | Evitarlo, oppure lanciafiamme o barile |
-| **Scudato** | Riceve pochissimo danno di fronte | Esplosioni, fuoco, o colpirlo dal lato con la pompa |
-| **Gonfio** | Muore esplodendo e colpisce le corsie vicine | Abbatterlo lontano; usarlo come barile contro gli altri |
-| **Sputatore** | Da lontano lancia acido su una corsia, segnalata a terra | Cambiare corsia in tempo |
-| **Barricate e auto** | Ostacoli fermi | Abbattere o evitare |
-| **Recinzione elettrica** | Si accende e si spegne a tempo | Passare nel momento giusto |
-| **Zombie dai tetti** | Cadono dove si vede l'ombra | Evitare l'ombra |
-
-**Regola di correttezza:** ogni pericolo **si annuncia prima** di colpire. Si perde per una scelta sbagliata, mai per un colpo invisibile.
-
----
-
-## 7. Personaggi
-
-✅ Personaggi controllabili e collezionabili (requisito v2).
-
-✅ In M1 si sceglie **il personaggio che corre**. Ognuno ha un'**abilità**, per esempio:
-- **granata:** apre subito la cassa davanti;
-- **scatto:** attraversa un ostacolo;
-- **richiamo:** fa venire un compagno extra;
-- **fuoco concentrato:** per 3 s spara come un fucile di precisione.
-
-Come si ottengono e come crescono si decide quando definiamo i personaggi per tutto il gioco.
-
----
-
-## 8. Struttura di un livello
-
-✅ Ogni livello dura **1,5–2,5 minuti** ed è **disegnato a mano**, non generato a caso:
-1. **Partenza tranquilla** (5–10 s): primi zombie, una cassa facile.
-2. **Tre o quattro "scene"**: ognuna mette davanti **una scelta**. Esempi:
-   - cassa arma a sinistra con orda in arrivo, gabbia a destra dietro una barricata: cosa prendi per primo?
-   - lanciafiamme nella corsia del bruto, oppure tieni il fucile di precisione per la fila di scudati che si vede in fondo?
-3. **Finale:** un **capo-zombie** che lancia attacchi sulle corsie (si schivano) e va abbattuto con quello che hai raccolto. In alternativa, un **portone** da sfondare prima che l'orda alle spalle ti raggiunga.
-
-**Tipi di livello**, per varietà:
-
-| Tipo | Obiettivo |
+| Misura | Obiettivo |
 |---|---|
-| **Fuga** | Arrivare in fondo |
-| **Recupero** | Aprire un oggetto specifico molto resistente, per esempio i medicinali, mentre l'orda incalza |
-| **Scorta** | Un furgone corre in una corsia; va protetto |
-| **Inseguimento** | Raggiungere e abbattere uno zombie che porta via le scorte |
+| Zombie visibili in media / al picco | ≥ 30 / ≥ 80 |
+| Tempo fra due scelte di corsia che contano | 6–12 s |
+| Giocatore bravo: vittorie | L1 100%, livello di precisione ≥ 80%, capo ≥ 60% |
+| Giocatore medio: vittorie | L1 ≥ 80%, capo ≤ 40% |
+| Giocatore a caso: vittorie | ≤ 20% oltre il livello 1 |
+| Cause di sconfitta | Nessuna oltre il 50%: la difficoltà deve venire da cose diverse |
+| Durata | 90–150 s |
+| Prestazioni sul profilo telefono medio | ≥ 55 fps con 100 zombie |
 
-**Stelle del livello**, senza punteggi da calcolare:
-1. ★ arrivato;
-2. ★ cassaforte aperta;
-3. ★ tutte le gabbie aperte e nessun compagno perso.
+Solo se queste misure sono rispettate te lo do da provare. Poi si cambia solo ciò che le misure o la tua prova indicano, scrivendo il perché.
 
-Il terzo criterio è stato precisato in fase 2: con la sola condizione «nessun compagno perso» bastava non salvarne nessuno per ottenere la stella.
+## 7. Cosa riusiamo dal lavoro già fatto
+Si riusano solo le parti tecniche, già verificate:
+- folle di zombie animate dalla scheda grafica (100+ a 60 fps sul S25);
+- strada e ambiente;
+- particelle, suoni e interfaccia.
 
----
-
-## 9. Cosa si porta a casa
-
-- **Risorse per la città**, dalle casse di bottino e dalla cassaforte.
-- **Pezzi per sbloccare personaggi**, da cassaforti e livelli speciali.
-- **Stelle:** sbloccano i livelli successivi della Corsa. Non bloccano mai la città.
-
-Armi, compagni e potenziamenti raccolti **valgono solo per quel livello**: ogni partita riparte dalla pistola, ed è questo che rende ogni corsa una sfida di scelte.
-
-✅ **Collegamento con la città** (da definire con la città): un edificio come l'Armeria potrebbe far partire con un'arma diversa o aprire le casse un po' più in fretta. Sempre con risorse di gioco, mai a pagamento (U7).
-
----
-
-## 10. Quantità
-
-✅ **Al lancio:**
-- **40 livelli** disegnati a mano, divisi in 4 zone di città: periferia, centro, porto, zona industriale;
-- **una modalità infinita** con classifica, che riusa le scene dei livelli.
-
-Altri livelli arrivano con gli aggiornamenti.
-
----
-
-## 11. Qualità: come deve essere
-
-| Aspetto | Requisito |
-|---|---|
-| **Risposta** | Cambio corsia entro 0,15 s dallo scorrimento; nessun ritardo percepibile |
-| **Sensazione dei colpi** | Ogni colpo su una cassa la fa sobbalzare e mostra una crepa; l'apertura esplode in pezzi con il suono giusto; gli zombie reagiscono quando vengono colpiti |
-| **Armi distinte** | Ognuna con suono, effetto e ritmo propri: si riconoscono a occhi chiusi |
-| **Leggibilità** | Corsie sempre chiare; pericoli annunciati; oggetti riconoscibili da lontano dall'icona |
-| **Niente matematica** | Nessun numero da confrontare o calcolare: barre, crepe, icone, dimensioni |
-| **Fluidità** | 60 fps sul S25, anche con 40 zombie, esplosioni e 3 armi che sparano |
-| **Equità** | Ogni livello si può completare con 3 stelle partendo dalla pistola, senza acquisti |
-| **Rigiocabilità** | Ogni livello ha almeno due modi diversi di affrontarlo, verificati giocando |
+Le regole di gioco si riscrivono da zero secondo questo documento.
