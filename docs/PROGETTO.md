@@ -1,169 +1,123 @@
 # Il progetto — cosa realizziamo, come, come deve essere
 
-Revisione da zero, 20 ottobre 2026. Questo è **l'unico documento del gioco**. Tutto il resto è archivio o fonti.
-Ogni punto è marcato:
+Revisione del 20 ottobre 2026, sera, scritta sull'idea dell'utente (DECISIONI U11).
+Legenda:
 - ✅ **deciso da te**;
-- 🔶 **mia proposta**, in attesa del tuo sì o no.
+- 🔶 **mia proposta**, in attesa del tuo sì o no;
+- ❌ **scartato da te**.
 
 ---
 
-## 1. Cosa realizziamo
+## 1. L'idea (le tue parole)
 
-🔶 **Un gioco Android free-to-play in cui guidi un gruppo di sopravvissuti lungo strade invase dagli zombie, lo fai crescere durante la corsa, e con quello che recuperi ricostruisci la tua città, che poi devi difendere dall'orda.**
+> «tutte le ads che vedi, quello che si deve muovere tra le corsie, senza operazioni matematiche, una specie di tower defence, e tutte le pubblicità che si vedono di solito che tutti vogliono giocare, e questi minigiochi devono essere fissi nel gioco, non solo come intro, […] oltre a gestire una città che si espande con il tempo»
 
-- ✅ **Ambientazione zombie**: scelta per gli asset gratuiti disponibili.
-- ✅ **Le scene delle "finte ads", rese giocabili davvero**, sono il gioco principale.
-- ✅ **La città** è la progressione permanente.
-- 🔶 **Due attività, non tre.** Bastano a coprire le due scene più famose delle ads (la corsa con le porte, la difesa della base) e tengono il lavoro sotto controllo. Una terza si aggiunge solo se le prime due funzionano.
-- 🔶 **Titolo provvisorio:** *Holdout City*. Nessun gioco omonimo trovato (RICERCA §9); da decidere.
+✅ **Cosa realizziamo:** un gioco con **due parti fisse**:
+1. **I minigiochi delle pubblicità**, quelli che tutti vogliono provare, resi giocabili davvero e **presenti per sempre** nel gioco, non solo come introduzione.
+2. **Una città da gestire** che si espande nel tempo.
 
----
+✅ **Vincoli:**
+- ambientazione zombie;
+- **nessuna operazione matematica** nei minigiochi;
+- dentro ci devono essere la **corsa tra le corsie** e una **specie di tower defense**.
 
-## 2. Come si gioca
+❌ **Scartato:** la proposta "Corsa + Notte" con porte a numeri.
 
-### 2.1 La Corsa — la scena delle ads, ma vera (2–3 minuti)
+## 2. Perché è un'idea forte (fatti, RICERCA §10)
 
-| Cosa | Come funziona |
-|---|---|
-| Visuale | Dall'alto e da dietro, telefono in orizzontale |
-| Comando | Un dito: trascini a destra e a sinistra per spostare la squadra. La squadra avanza e spara da sola |
-| La squadra | Un **eroe** in testa più i **sopravvissuti** che lo seguono. Più sono, più fuoco fanno |
-| Le porte | Cambiano la squadra: +sopravvissuti, arma diversa, cadenza, scudo. **Nessuna porta è sempre la migliore**: quella con più sopravvissuti ha più zombie davanti, l'arma pesante rallenta, e il valore di una porta si alza sparandole. Si decide in un secondo, ma si decide davvero |
-| Gli zombie | Tipi diversi e riconoscibili dalla sagoma: orde lente, corridori, bruti che spezzano la fila, sputatori da lontano, barricate da abbattere |
-| Ambiente | Barili che esplodono, auto da usare come copertura, corsie che si restringono |
-| Fine corsa | Un capo-zombie o un blocco da sfondare. Il risultato dipende da quanti arrivano |
-| Bottino | Casse lungo la strada (risorse) e, in alcune corse, un **sopravvissuto speciale da salvare**: è così che si ottengono gli eroi |
-| Dopo la corsa | La squadra temporanea si scioglie; restano bottino, eroi salvati e progressi |
+- **I giochi delle pubblicità attirano, poi deludono.** Molte pubblicità mostrano minigiochi che il gioco non contiene. È un problema talmente noto che Playrix è stata costretta dall'autorità britannica sulla pubblicità ad aggiungere quei minigiochi nei suoi giochi.
+- **Chi li ha messi davvero e in modo permanente ne ha guadagnato:**
+  - **X-Hero** ha tenuto il minigioco delle sue pubblicità ("SaveDoge", disegnare una protezione) come modalità fissa, ed è arrivato **primo per download negli USA** su iOS;
+  - **King of Avalon** ha trasformato le battaglie delle pubblicità in una campagna permanente.
+- **Il concorrente più vicino**, *Those Games* di D3 Publisher, raccoglie i minigiochi delle pubblicità, ma è **a pagamento, solo Switch, PlayStation e PC, senza città né progressione**. Su mobile, gratis e con una città che cresce, non risulta nessuno che lo faccia.
 
-**Perché non è la finta ad:** nella pubblicità basta scegliere il numero più alto. Qui ogni porta ha un prezzo, gli zombie richiedono di spostarsi, l'ambiente si usa. Chi gioca meglio arriva con più sopravvissuti e più bottino.
-
-### 2.2 La Notte — difendi la città che hai costruito (2–3 minuti)
-
-| Cosa | Come funziona |
-|---|---|
-| Dove | **Sulla tua città vera**: mura, torrette e edifici che hai piazzato sono il campo di battaglia |
-| Cosa fai | Guidi l'eroe e la squadra dove le difese cedono, ripari, abbatti i bruti che sfondano |
-| Ondate | Arrivano da direzioni annunciate; ogni notte è più dura della precedente |
-| Perdere | Non distrugge niente. La città resta com'è, riprovi quando vuoi |
-| Perché conta | **Costruire bene serve davvero**: dove metti mura e torrette cambia la difesa. La città non è solo un menu di potenziamenti |
-
-### 2.3 La città
-
-| Cosa | Come funziona |
-|---|---|
-| Spazio | Griglia che si allarga comprando terreno |
-| Edifici | **Produzione** (risorse anche quando non giochi), **difesa** (mura, torrette, usate nella Notte), **squadra** (più sopravvissuti di partenza nella Corsa, armi migliori), **eroi** (alloggi e addestramento) |
-| Regole | ✅ Costruzione e potenziamento **istantanei**, nessun timer. ✅ Tutto acquistabile **in qualunque ordine**, nessun edificio ne richiede un altro. ✅ Produzione passiva |
-| Aspetto | Cresce a vista: da baracche e lamiere a quartiere ricostruito |
-
-### 2.4 Eroi
-- ✅ **Controllabili e collezionabili.**
-- 🔶 **6 eroi al lancio**, ciascuno con un'abilità propria (granata, cura, scudo, raffica, trappola, richiamo).
-- 🔶 **Come si ottengono:** **salvandoli nelle corse**. Niente estrazioni casuali, niente pacchetti a pagamento.
-- 🔶 **Come crescono:** con livelli e potenziamenti pagati in risorse di gioco; ✅ tutti potenziabili, nessun ramo che ne esclude un altro.
-
-### 2.5 Risorse
-- 🔶 **Due risorse**: **Materiali** (per costruire) e **Viveri** (per squadra ed eroi). Poche, per non confondere.
-- ✅ **Si ottengono giocando** e dalla produzione passiva.
-
-### 2.6 Senza cosa
-Niente energia, niente attese, niente timer, niente punizioni se non giochi, niente PvP al lancio.
+**[deduzione]** Il nostro gioco è *"i giochi delle pubblicità, veri, tutti in un posto, e una città che cresce con quello che vinci"*. Le nostre pubblicità mostrano esattamente ciò che si gioca: sono vere.
 
 ---
 
-## 3. Come deve essere
+## 3. Catalogo dei minigiochi delle pubblicità
 
-Requisiti misurabili, da verificare sul tuo Samsung S25 e su un telefono medio:
+Elenco dei minigiochi tipici delle pubblicità, con la fonte che li documenta e come diventerebbero nel nostro gioco a tema zombie. **Tu scegli quali entrano.**
+
+| # | Minigioco (come appare nelle ads) | Fonte | 🔶 Versione nel nostro gioco | Matematica? |
+|---|---|---|---|---|
+| M1 | **Corsa tra le corsie**: il personaggio si sposta fra le corsie evitando ostacoli e nemici | ✅ richiesto da te | Il sopravvissuto corre in una strada a 3 corsie: schiva auto, barricate e zombie, raccoglie oggetti, spara. Niente porte a numeri | No |
+| M2 | **Tower defense**: difendere una base da ondate di nemici | ✅ richiesto da te | Piazzi torrette e barricate lungo la strada che porta al rifugio, le ondate di zombie arrivano, potenzi e riposizioni | No |
+| M3 | **Tira il perno**: togliere i perni nell'ordine giusto per salvare il personaggio (lava, acqua, nemici, tesoro) | Penn State, Udonis | Togli i perni per far cadere gli zombie nella trappola e portare i viveri al sopravvissuto | No |
+| M4 | **Disegna la protezione**: tracciare con il dito una barriera per proteggere qualcuno | GameRefinery (X-Hero) | Disegni un muro per proteggere i sopravvissuti dall'orda per 10 secondi | No |
+| M5 | **Parcheggio bloccato**: far uscire le auto nell'ordine giusto | Those Games | Liberi la strada facendo uscire i veicoli prima che arrivi l'orda | No |
+| M6 | **Ordina i colori**: separare liquidi o oggetti per colore | Those Games | Smisti le scorte (cibo, acqua, munizioni) nei contenitori giusti | No |
+| M7 | **Scegli l'oggetto giusto**: due o tre oggetti, uno salva il personaggio | Udonis, Penn State (Homescapes) | Situazioni del sopravvissuto: scegli lo strumento giusto contro il pericolo | No |
+| M8 | **Torre dei numeri**: combattere nemici con un numero più basso del tuo | Those Games | — | **Sì, escluso** |
+| M9 | **Corsa del denaro con porte ×/+** | Those Games | — | **Sì, escluso** |
+
+**[non verificato]** Altri minigiochi molto diffusi nelle pubblicità recenti (svitare le viti, ordinare il traffico) esistono, ma non ho una fonte affidabile che lo confermi. Li verifico se ti interessano.
+
+### 🔶 Quanti al lancio
+- **Proposta:** **M1, M2 e altri 2 o 3 a tua scelta** al lancio; gli altri si aggiungono con gli aggiornamenti.
+- **Perché:** ogni minigioco è un gioco a sé, con i suoi livelli. Farne pochi e fatti bene costa meno e diverte di più che farne tanti mediocri.
+
+### 🔶 Come diventano "veri" e fissi
+- **Livelli:** ogni minigioco ha i suoi livelli che diventano via via più difficili, sempre disponibili dal menu della città.
+- **Differenza con la pubblicità:** si vince o si perde davvero, il livello non va in loop e non è un tutorial finto.
+- **Ricompense:** ogni livello dà risorse per la città. Qualunque minigioco preferisci, puoi far crescere la città.
+
+---
+
+## 4. La città
+
+✅ **Una città che si espande nel tempo**, gestita dal giocatore. Dai requisiti del piano precedente (DECISIONI, sezione v2):
+- città come progressione permanente;
+- costruzioni istantanee;
+- tutto potenziabile in qualunque ordine;
+- produzione passiva.
+
+🔶 **Proposta di legame città–minigiochi**, da approvare:
+- le **risorse** vinte nei minigiochi servono a costruire e ingrandire la città;
+- la città **si espande** comprando nuovi quartieri, che si liberano dagli zombie e si ricostruiscono;
+- la città **produce** risorse anche mentre non giochi.
+
+Quali edifici e cosa fanno lo definiamo dopo aver scelto i minigiochi: dipende da loro.
+
+---
+
+## 5. Personaggi
+
+✅ Personaggi **controllabili e collezionabili** (requisito v2, DECISIONI).
+🔶 Come entrano nei minigiochi e come si ottengono: da definire dopo la scelta dei minigiochi.
+
+---
+
+## 6. Come deve essere
 
 | Requisito | Misura |
 |---|---|
-| Si gioca subito | Prima corsa entro 10 secondi dalla prima apertura, senza menu né registrazione |
-| Partite brevi | Corsa e Notte durano 2–3 minuti |
-| Fluido | 60 fps sul S25, almeno 30 su un telefono di fascia media |
-| Una mano | La Corsa si gioca con un dito |
-| Leggibile | Ogni tipo di zombie riconoscibile dalla sagoma; i pericoli si annunciano prima di colpire |
-| Scelte vere | Nelle porte non esiste un'opzione sempre migliore (verificato giocando) |
-| Rispetto | ✅ Pubblicità **solo facoltativa**; mai annunci forzati durante il gioco |
-| Offline | Si gioca senza rete; i progressi si salvano anche online per non perderli cambiando telefono |
-| Lingue | Italiano e inglese |
+| ✅ Niente matematica nei minigiochi | Nessuna porta o scelta basata su calcoli |
+| ✅ Minigiochi fissi | Ogni minigioco ha livelli propri, sempre disponibili, non solo all'inizio |
+| ✅ Pubblicità solo facoltative | Mai annunci forzati |
+| 🔶 Si gioca subito | Primo minigioco entro 10 secondi dalla prima apertura |
+| 🔶 Partite brevi | 30 secondi – 3 minuti per livello, a seconda del minigioco |
+| 🔶 Fluido | 60 fps sul Samsung S25, almeno 30 su un telefono medio |
+| 🔶 Lingue | Italiano e inglese |
 
 ---
 
-## 4. Come guadagna
+## 7. Come guadagna
 
-### 4.1 Pubblicità facoltative ✅
-Si guarda un video solo per scelta, in cambio di un vantaggio dichiarato. 🔶 Proposta di tre punti:
-- **raddoppia il bottino** della corsa;
-- **ritira subito** la produzione della città;
-- **riprova dall'ultimo punto** dopo una sconfitta (riprovare da capo resta sempre gratis).
-
-### 4.2 Acquisti ✅: pochi, funzionali, mai per potenziarsi
-Le tue parole: *«si deve differenziare dagli altri giochi per gli acquisti, non troppi, che migliorino funzioni o eseguano funzioni migliori, non voglio che servano per potenziarsi veramente»*.
-
-🔶 **Proposta: al massimo due prodotti.**
-
-| Prodotto | Cosa dà | Cosa NON dà |
-|---|---|---|
-| **Pacchetto Comandante** (una volta, circa 4,99 €) | Funzioni migliori della città: piazzare mura e torrette in serie con un gesto, salvare e ricaricare la disposizione della città, rivedere la Notte con la mappa dei punti dove gli zombie sono passati | Nessuna risorsa, nessun eroe, nessun danno o vita in più |
-| **Aspetto** (facoltativo, se lo vuoi) | Colori e stili di squadra e città | Nessun effetto sul gioco |
-
-**Messaggio verso i giocatori:** «Qui non si compra la vittoria.» È la differenza con i giochi delle ads, che vendono potenza.
-
-**Conseguenza onesta:** si guadagna meno per singolo giocatore rispetto a chi vende potenza, e il ricavo dipende soprattutto da quanti giocano e dalla pubblicità. Gli scenari vanno ricalcolati quando il gioco è approvato (dati di mercato in RICERCA §1–3).
+- ✅ **Pubblicità solo facoltative.**
+- ✅ **Acquisti:** pochi, che migliorano le funzioni, mai per potenziarsi, diversi dagli altri giochi (U7).
+- 🔶 **Quali prodotti precisamente:** si definiscono dopo aver scelto minigiochi e città. Non propongo funzioni da vendere prima che esistano (U9).
 
 ---
 
-## 5. Con cosa lo facciamo
+## 8. Come lo realizziamo
 
-- ✅ **Tecnologia web 3D** (Babylon.js), trasformata in app Android (Capacitor). Si prova anche da un link sul telefono, e la versione per PC viene quasi gratis.
-- ✅ **Asset 3D gratuiti** con licenza libera anche per uso commerciale: soprattutto Quaternius, Zombie Apocalypse Kit e City MegaKit (RICERCA §7).
-- 🔶 **Salvataggio online** con Supabase, **dati d'uso e crash** con Firebase, **pubblicità** con AdMob, **acquisti** con Google Play tramite RevenueCat.
-- ✅ **Lo sviluppo lo fa l'AI**: tu provi e decidi.
+✅ **Niente codice finché il progetto non è approvato.** Tecnologia web 3D (Babylon.js) trasformata in app Android, asset gratuiti, sviluppo fatto dall'AI, prove sul tuo S25.
 
----
-
-## 6. Come lo realizziamo
-
-Ogni fase finisce con **qualcosa che provi sul telefono** e con il tuo ok prima della fase successiva. ✅ **Nessuna riga di codice finché non approvi questo documento.**
-
-| Fase | Cosa ottieni | Il tuo ruolo |
-|---|---|---|
-| **1. Approvazione** | Questo documento corretto finché dici «è giusto». Poi il dettaglio con tutti i numeri (porte, zombie, edifici, costi), approvato da te | Leggere e dire sì o no punto per punto |
-| **2. Prova tecnica** | Un link con 50 zombie e la squadra in movimento: verifica che il 3D gira bene sul telefono e che gli asset stanno bene insieme | Aprire il link sul S25 |
-| **3. La Corsa** | La Corsa giocabile dall'inizio alla fine | Giocarla e dire se diverte |
-| **4. Città e Notte** | Costruire la città e difenderla | Giocare |
-| **5. Gioco completo** | Eroi, progressione, tutte le corse, grafica, suoni, italiano e inglese | Giocare |
-| **6. App e servizi** | App installata sul telefono con salvataggio online, pubblicità e acquisti di prova | Creare gli account a tuo nome (Google Play 25 $, AdMob, Firebase), con le mie istruzioni passo-passo |
-| **7. Test e uscita** | Google chiede un test chiuso con **almeno 12 tester per 14 giorni** prima dell'uscita (RICERCA §5); poi uscita in pochi paesi per misurare, poi in tutto il mondo | Trovare i 12 tester, approvare ogni pubblicazione |
-
----
-
-## 7. Riepilogo: cosa è deciso, cosa aspetta te
-
-✅ **Deciso da te** (le tue parole sono in [DECISIONI.md](DECISIONI.md)):
-- **Il gioco:**
-  - scene delle finte ads giocabili davvero come gioco principale;
-  - città permanente;
-  - costruzione istantanea;
-  - libertà di potenziare tutto in qualunque ordine;
-  - eroi collezionabili;
-  - produzione passiva;
-  - ambientazione zombie.
-- **Soldi:**
-  - pubblicità solo facoltative;
-  - guadagnare, ma acquisti pochi, funzionali e mai per potenziarsi.
-- **Sviluppo:**
-  - Android prima, PC se sostenibile;
-  - tecnologia web;
-  - sviluppo fatto dall'AI;
-  - test sul Samsung S25;
-  - nessuna fretta;
-  - niente codice prima del design.
-
-🔶 **Aspetta il tuo sì o no:**
-1. Le due attività, **Corsa** e **Notte** (§2.1–2.2).
-2. **Eroi** salvati nelle corse, 6 al lancio, senza estrazioni casuali (§2.4).
-3. **Due risorse**, Materiali e Viveri (§2.5).
-4. I tre punti di **pubblicità facoltativa** (§4.1).
-5. I **due prodotti** in vendita (§4.2).
-6. Il **titolo** *Holdout City* (§1).
+| Passo | Cosa succede |
+|---|---|
+| **1. Scegli i minigiochi** | Dal catalogo §3 |
+| **2. Definiamo ogni minigioco** | Come si gioca, livelli, difficoltà, cosa si vince. Uno alla volta, con la tua approvazione |
+| **3. Definiamo la città** | Edifici, espansione, legame con i minigiochi |
+| **4. Personaggi, acquisti, nome** | Sopra ciò che è stato deciso |
+| **5. Progetto approvato** | Solo allora si passa alla produzione, con prove sul telefono a ogni passo |

@@ -94,6 +94,15 @@ Nessuna di queste informazioni è una decisione sul gioco.
   - YouTube Playables: solo partner selezionati. Fonte: https://developers.google.com/youtube/gaming/playables/reference/monetization
   - Facebook Web Games: chiusi il 30/09/2026. Fonte: https://developers.facebook.com/blog/post/2025/07/31/web-and-instant-games-changes/
 
+## 10. Minigiochi delle pubblicità
+
+- **"Tira il perno":** è il minigioco più tipico delle pubblicità ingannevoli (salvare un personaggio togliendo i perni); è nato per la pubblicità, non per un gioco vero. Penn State ha uno studio sulle pubblicità di giochi ingannevoli. Fonti: https://psu.edu/news/research/story/five-ways-fake-mobile-games-fail-meet-advertised-expectations · https://www.blog.udonis.co/mobile-marketing/mobile-games/fake-mobile-game-ads
+- **Playrix:** vietate dall'autorità britannica sulla pubblicità (ASA) alcune sue pubblicità, ha dovuto aggiungere quei minigiochi nei giochi. Fonte: https://www.gamerefinery.com/struggling-with-ua-and-player-retention-in-a-post-idfa-world-minigames-are-the-answer
+- **X-Hero:** il minigioco delle pubblicità "SaveDoge" (disegnare una protezione) è rimasto come **modalità fissa**, con livelli e premi. Dopo l'uscita (settembre 2022) il gioco è arrivato 1° per download negli USA su iOS e 17° per incassi. Stessa fonte.
+- **King of Avalon:** le battaglie di difesa mostrate nelle pubblicità sono diventate una **campagna permanente** che dà premi al gioco principale. Stessa fonte.
+- **Royal Match:** i livelli "King's Nightmare" delle pubblicità sono ricorrenti nel gioco. Stessa fonte.
+- **Those Games (D3 Publisher, 2023) e Those Games 2:** raccolta dei minigiochi delle pubblicità (Color Lab, Pin Pull, Number Tower, Parking Lot, Cash Run nel primo; altri 4 nel secondo). Venduta a 9,99 $ su Switch e Steam, poi anche su PlayStation. Stile a omini stilizzati, nessuna versione mobile, nessuna città. Fonti: https://en.wikipedia.org/wiki/Those_Games · https://nichegamer.com/those-games-collection-out/
+
 ## 9. Nomi controllati (ricerca web, non ricerca di marchi registrati)
 
 - **Già usati o confondibili:** Dead District (Steam), Outpost Zero (Steam), Reclaimers (mobile), Block Zero (gioco zombie web/mobile), Rebuild Z (troppo simile a Rebuild), Last Block, Survivor City.
