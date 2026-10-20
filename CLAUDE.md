@@ -8,3 +8,11 @@
 6. **`archivio/` è superato:** non usarlo come base di decisioni.
 7. **Commit su `main` a ogni operazione finita**, con i documenti aggiornati nello stesso commit.
 8. **Scrittura:** in italiano, chiaro e diretto, senza muri di testo.
+9. **Metodo professionale, mai approssimativo** (U15 e richieste del 20/10/2026). Per ogni sistema di gioco:
+   1. studio completo dei giochi di riferimento con fonti;
+   2. documento con regole e numeri motivati;
+   3. prototipo grezzo misurato (test automatici, metriche);
+   4. iterazione;
+   5. solo alla fine contenuti e grafica.
+
+   Niente regole inventate, niente tentativi, niente riassunti al posto del lavoro. **Copiare ciò che funziona nei giochi di successo.**
