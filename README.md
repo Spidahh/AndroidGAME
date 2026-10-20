@@ -1,21 +1,17 @@
-# AndroidGAME
-**MASTER V4 (city-first, UX, economie, asset, retention e business): [docs/MASTER-PRODOTTO-BUSINESS-V4.md](docs/MASTER-PRODOTTO-BUSINESS-V4.md)**
+# AndroidGAME — Holdout City
 
+**DOCUMENTO UNICO ESECUTIVO PER AI/CODEX/CLAUDE:** [docs/PIANO-ESECUTIVO-AI.md](docs/PIANO-ESECUTIVO-AI.md)
 
-**SPECIFICA DI PRODOTTO UNIFICATA (aggiornata 20/10/2026): [docs/PRODOTTO-UNIFICATO.md](docs/PRODOTTO-UNIFICATO.md)** — fonte operativa per gameplay, durata dei minigiochi, corse, città, personaggi, economia, AFK, pubblicità, monetizzazione, roadmap e controlli qualità. In caso di conflitto progettuale con gli altri documenti AI, consultare questa sintesi e il registro delle decisioni dell'utente. Il target 40+40+240 livelli è backlog, non requisito di lancio.
+**Visione:** inizi con zero edifici, costruisci l'accampamento, accogli superstiti, sviluppi la città attivamente attraverso lavori, miniere, officine, ricerca ed espansioni; i minigiochi veri alimentano l'economia. No timer di costruzione, rewarded facoltative, niente potenza acquistabile. Android first, web beta esistente.
 
+**Stato:** piano operativo consolidato 20/10/2026. La presenza del piano non implica che le funzionalità siano implementate; verifica lo stato del codice e dei test in repository.
 
-**Holdout City — Real Ad Games**: i minigiochi delle pubblicità resi veri e fissi, più una città zombie da ricostruire che si espande nel tempo.
-**Stato:** progetto completo il 20/10/2026. Nessun codice finché l'utente non dà il via alla fase 1.
+## Gerarchia della documentazione
+1. [Decisioni dell'utente](docs/DECISIONI.md) — vincoli che prevalgono.
+2. [Piano esecutivo AI](docs/PIANO-ESECUTIVO-AI.md) — design, scope V1, regole, economia, UX, business, fasi, acceptance e prompt.
+3. [Città da zero](docs/CITTA-DA-ZERO-MASTER.md) — dettagli urbanizzazione, sopravvissuti e gestione.
+4. [Master prodotto/business V4](docs/MASTER-PRODOTTO-BUSINESS-V4.md) — audit esteso e ipotesi commerciali.
+5. [Minigiochi](docs/M1-CORSA.md), [Barricata](docs/M2-BARRICATA.md), [Puzzle](docs/M3-M5-ROMPICAPO.md) — approfondimenti, con aspetti precedenti superseduti dal piano.
+6. [Ricerca](docs/RICERCA.md), [Realizzazione](docs/REALIZZAZIONE.md), [Archivio](archivio/) — background, non scelte correnti se in conflitto.
 
-| Documento | Contenuto |
-|---|---|
-| [docs/PROGETTO.md](docs/PROGETTO.md) | **Indice del gioco**: cos'è e dove sono i dettagli. ✅ = deciso dall'utente, 🟦 = deciso dall'AI su delega |
-| [docs/M1-CORSA.md](docs/M1-CORSA.md), [docs/M2-BARRICATA.md](docs/M2-BARRICATA.md), [docs/M3-M5-ROMPICAPO.md](docs/M3-M5-ROMPICAPO.md) | I minigiochi |
-| [docs/CITTA.md](docs/CITTA.md) | Città, personaggi, economia, primo accesso |
-| [docs/GUADAGNO.md](docs/GUADAGNO.md) | Pubblicità facoltative e i 5 prodotti, scenari di ricavo |
-| [docs/REALIZZAZIONE.md](docs/REALIZZAZIONE.md) | Nome, tecnologia, asset, fasi, cosa fa l'utente, regole, promozione |
-| [docs/DECISIONI.md](docs/DECISIONI.md) | Registro delle decisioni dell'utente, con le sue parole |
-| [docs/RICERCA.md](docs/RICERCA.md) | Fatti verificati con fonte: mercato, pubblicità, regole, tecnologia, asset, canali, nomi |
-| [CLAUDE.md](CLAUDE.md) | Regole per le sessioni AI |
-| [archivio/](archivio/) | Piani precedenti (v2 e proposte v3), **superati**: non usarli come decisioni |
+**Non iniziare la partita con M1; non riutilizzare il vecchio requisito dei 320 livelli come milestone di lancio.**
