@@ -56,6 +56,29 @@ Fonte: [Fake Ad Games](https://fakeadgames.com/archive/last-war-survival) e il m
 - **La folla è vita e forza insieme:** quando incontra un gruppo nemico, entrambe le parti perdono unità.
 - **Sconfitta:** si perde quando la folla arriva a zero.
 
+### 1.3b Altri riferimenti studiati (dettagli e fonti in §8)
+- **Last War Frontline**, dati delle guide per livello:
+  - la squadra parte da **1–3 soldati**, arriva a circa **13–15** a metà tappa e a circa **300** in un finale buono;
+  - **i barili vanno distrutti per passare**: se ci passi sopra intatti costano truppe;
+  - **gli zombie fanno da scudo ai barili**, perché il fuoco automatico colpisce prima loro;
+  - i **cani** sono veloci, fanno molto danno e vanno uccisi per primi;
+  - il **boss** è annunciato da un allarme, lancia colpi da schivare, e al livello 40 ce ne sono due;
+  - **pannelli negativi** che migliorano se ci spari (da −5 a −3 a positivo) e muri negativi da evitare.
+- **Zombie War Survival** (CrazyGames), il clone più fedele:
+  - **ruote potenziamento** da distruggere concentrando il fuoco, che se ci passi sopra intatte uccidono truppe;
+  - i giganti vengono presi di mira solo quando non ci sono zombie piccoli a portata;
+  - un boss ogni 5 livelli, con un pugno caricato da schivare;
+  - potenziamenti di potenza di fuoco **fra una corsa e l'altra**.
+- **Zombie Lane:** **attacco aereo** che si attiva quando la sua barra è piena; esperienza della corsa spesa fra una corsa e l'altra.
+- **Join Clash:** si parte da soli e si raccolgono persone; seghe e asce costano parte della squadra.
+- **Count Masters:** la grandezza della folla è vita, potenza e punteggio insieme, e si vede subito.
+- **Lamentele dei giocatori:**
+  - nemici che diventano più forti mentre tu ti indebolisci, vita dei nemici che sale di migliaia;
+  - oggetti ammassati che si coprono;
+  - bersagli poco leggibili;
+  - folla più larga della pista;
+  - pubblicità a ogni livello.
+
 ### 1.4 Cosa funziona in tutti, e lo copiamo
 1. **La squadra è vita e forza insieme.** Un solo numero che il giocatore capisce al volo e che vede crescere: [COPIATO] da tutti e tre.
 2. **Si spara a oggetti con un numero che scende**; a zero danno un premio: [COPIATO] da Last Z e Frontline.
@@ -64,6 +87,10 @@ Fonte: [Fake Ad Games](https://fakeadgames.com/archive/last-war-survival) e il m
 5. **Le scelte sono di percorso:** quale barile prendere, a quale rinunciare, quando spostarsi prima che sia tardi: [COPIATO] da Frontline.
 6. **Difficoltà a tappe chiara:** prima costruisci, poi mantieni, poi precisione, poi il muro: [COPIATO] da Frontline.
 7. **Punteggio di fine livello** = soldati arrivati vivi: [COPIATO] da Frontline.
+8. **Un oggetto intatto sulla tua strada costa soldati.** O lo distruggi, o cambi corsia e ci rinunci: è la scelta centrale. [COPIATO] da Frontline e Zombie War Survival.
+9. **Gli zombie proteggono gli oggetti:** prima si ripulisce l'orda, poi si raggiunge il barile. [COPIATO] da Frontline.
+10. **Effetto valanga:** arma migliore → più barili aperti → più soldati → più danno. Un errore presto si paga alla fine. [COPIATO] da Frontline.
+11. **Attacco speciale a carica:** una barra che si riempie uccidendo zombie e scatena un attacco aereo su una corsia. [COPIATO] da Zombie Lane.
 
 ### 1.5 Cosa evitiamo (difetti segnalati dai giocatori)
 - Difficoltà incoerente: la curva si misura con test automatici, non a occhio (§6).
@@ -85,6 +112,12 @@ Fonte: [Fake Ad Games](https://fakeadgames.com/archive/last-war-survival) e il m
    - **ostacolo indistruttibile:** −5;
    - **barile esploso** troppo vicino: −3.
 5. **Zero soldati** = sconfitta. Riprovare è gratis e immediato.
+5b. **Dimensione della squadra:** si parte da **3**. Un livello giocato bene finisce con **60–150 soldati**. Si disegnano fino a 60 soldati, compatti dentro la corsia; oltre, cresce il numero mostrato e la formazione si infittisce.
+5c. **Oggetti intatti sulla strada:** se la squadra ci arriva sopra, **costano soldati**:
+   - barile soldati o arma: −3;
+   - portone a numero: −5;
+   - cassaforte: nessun costo, ma va persa.
+5d. **Attacco aereo:** la barra si riempie uccidendo zombie. Quando è piena, un tocco bombarda la corsia davanti a te per 2 s.
 6. **Oggetti da conquistare:** grandi, con un **numero** sopra che scende a ogni colpo. A zero si aprono:
    - **Barile dei soldati:** +N soldati; il valore si vede prima di colpirlo;
    - **Barile dell'arma:** l'arma della squadra sale di un livello (4 livelli);
@@ -111,7 +144,11 @@ Fonte: [Fake Ad Games](https://fakeadgames.com/archive/last-war-survival) e il m
 | Gigante | 600 | 1,0 m/s | 8 | La minaccia grossa: va abbattuto da lontano o evitato |
 | Capo (L5, L10) | 12.000 / 30.000 | fermo davanti | colpi annunciati: −6 | Prova finale di potenza |
 
-Resistenza per livello: **×(1 + 0,15 × (livello − 1))** [PARAMETRO].
+Resistenza per livello: **×(1 + 0,08 × (livello − 1))** [PARAMETRO]. La crescita è bassa di proposito: **la difficoltà viene da quanti zombie, quali tipi e in che ordine**, non da nemici che diventano spugne. Era la lamentela principale dei giocatori (§1.3b).
+
+| Nemico in più | Resistenza | Velocità | Soldati persi | Ruolo |
+|---|---:|---:|---:|---|
+| Cane | 25 | 5,5 m/s | 2 | Arriva in branchi da 3–5, veloce e pericoloso: va ucciso per primo [COPIATO] |
 
 ## 4. Armi della squadra (salgono di livello con i barili arma)
 
@@ -130,7 +167,8 @@ Resistenza per livello: **×(1 + 0,15 × (livello − 1))** [PARAMETRO].
 
 - **Durata:** 90–150 s [PARAMETRO]. Riferimento: le tappe di Frontline durano 1–2 minuti; da verificare nello studio in corso.
 - **Struttura:** 6–8 tratti da 40–60 m, ognuno con una **scelta di percorso** e un'**orda**.
-- **Orde:** da 20–30 zombie nei primi tratti fino a 60–100 nei livelli finali. **Obiettivo: almeno 30 zombie visibili per la maggior parte del tempo, picchi oltre 80** (richiesta dell'utente: «più nemici nello schermo»).
+- **Orde:** da 20–30 zombie nei primi tratti fino a 60–100 nei livelli finali. Il riferimento delle pubblicità è oltre 100 zombie nei picchi.
+- **Oggetti da sparare per livello:** 8–20, a gruppi di 2–4 sulle corsie, sempre separati e leggibili. Mai ammassati: era una lamentela dei giocatori. **Obiettivo: almeno 30 zombie visibili per la maggior parte del tempo, picchi oltre 80** (richiesta dell'utente: «più nemici nello schermo»).
 - **Curva a tappe come Frontline**, ripetuta due volte nei 10 livelli:
 
 | Livello | Fase | Cosa chiede |
@@ -168,7 +206,32 @@ Resistenza per livello: **×(1 + 0,15 × (livello − 1))** [PARAMETRO].
 
 Solo se queste misure sono rispettate te lo do da provare. Poi si cambia solo ciò che le misure o la tua prova indicano, scrivendo il perché.
 
-## 7. Cosa riusiamo dal lavoro già fatto
+## 7. Fra una corsa e l'altra (collegamento con la città)
+[COPIATO] da Zombie Lane, Zombie War Survival e Count Masters:
+- le risorse della corsa comprano nella città potenziamenti permanenti:
+  - **soldati di partenza** (da 3 fino a 10);
+  - **potenza di fuoco** (+5% per livello);
+  - **carica più rapida dell'attacco aereo**.
+- Sempre con risorse di gioco, mai a pagamento (U7).
+
+## 8. Fonti dello studio di approfondimento
+- Last War Frontline:
+  - [LDShop](https://www.ldshop.gg/blog/last-war-survival/last-war-frontline-breakthrough-guide.html)
+  - [Heaven Guardian](https://heaven-guardian.com/last-war-frontline-breakthrough-guide/)
+  - [Lootbar, livelli 16 e 40](https://www.lootbar.com/blog/en/last-war-frontline-breakthrough-evel-16-and-40-guide.html)
+  - [Theria Games, livelli 13 e 16](https://theriagames.com/guide/last-war-survival-frontline-breakthrough-level-16-guide/)
+  - [BuffBuff](https://buffbuff.com/blog/last-war-frontline-breakthrough-guide)
+- Zombie War Survival: https://crazygames.com/game/zombie-war-survival
+- Zombie Lane: https://www.crazygames.com/game/zombie-lane
+- Join Clash: https://www.crazygames.com/game/join-clash-3d
+- Count Masters: https://apps.apple.com/app/id1568245971
+- Mob Control: https://www.blog.udonis.co/mobile-marketing/mobile-games/mob-control
+- Lamentele dei giocatori:
+  - Weapon Master: https://apps.apple.com/us/app/-/id6447461923
+  - MachineGun Rush: https://apps.apple.com/app/id6472632232
+- Sensazione dei colpi: [Vlambeer, Nuclear Throne](https://infovore.org/?p=5275)
+
+## 9. Cosa riusiamo dal lavoro già fatto
 Si riusano solo le parti tecniche, già verificate:
 - folle di zombie animate dalla scheda grafica (100+ a 60 fps sul S25);
 - strada e ambiente;
