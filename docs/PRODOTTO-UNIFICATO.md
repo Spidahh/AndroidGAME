@@ -144,3 +144,7 @@ Le priorità e i test correttivi per M1, crescita città, economia, eventi, ads 
 
 ## Revisione di prodotto v2.0
 **[REVISIONE-SISTEMICA-2.md](REVISIONE-SISTEMICA-2.md)**: UX mobile per ogni schermata, loop di 3 minuti, equilibrio ricompense attive/AFK, specializzazioni, modalità, eventi, monetizzazione, acquisizione e gate di qualità. Parametri da testare, non implementazione completata.
+
+
+## Revisione V3 — economia interconnessa, miniere, chiavi e personaggi
+**[ECONOMIA-MINIERE-EROI-CHIAVI-V3.md](ECONOMIA-MINIERE-EROI-CHIAVI-V3.md)**: benchmark Last War / Whiteout / Last Z, struttura delle fonti e degli usi di ogni risorsa, miniera, generatore, officina, ricerca, reclutamento con chiavi/frammenti, progressione dei quartieri e simulazioni economiche da eseguire. **Sono proposte progettuali:** non sono già funzionalità del gioco.
