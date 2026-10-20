@@ -1,3 +1,6 @@
+## U16 — 20/10/2026 — centralità città e progressione da zero
+L'utente precisa che **il giocatore arriva in un'area senza città e senza strutture**, costruisce gradualmente un accampamento, incontra superstiti che appaiono nella zona, sviluppa avamposto e città. La città deve essere un gioco gestionale **anche attivo**, con edifici, miniere, upgrade, sblocchi, persone, produzione, filiere e attività tradizionali; i minigiochi sono complementari e alimentano il sistema economico comune. Obiettivo commerciale prioritario. Questo **sostituisce** l'apertura iniziale M1-obbligatoria in docs/PROGETTO.md e CITTA.md. Specifica: [CITTA-DA-ZERO-MASTER.md](CITTA-DA-ZERO-MASTER.md).
+
 # Decisioni dell'utente
 
 Registro delle decisioni prese dall'utente, con le sue parole. Solo ciò che è scritto qui è deciso. Le scelte prese dall'AI su delega (U14) sono marcate 🟦 nei documenti in docs/.
