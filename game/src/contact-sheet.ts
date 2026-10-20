@@ -14,7 +14,7 @@ const GROUPS: { title: string; items: [string, number][] }[] = [
 export async function runContactSheet(engine: Engine, hud: HTMLElement) {
   const scene = new Scene(engine);
   scene.clearColor = new Color4(0.55, 0.68, 0.78, 1);
-  const cam = new ArcRotateCamera('c', -Math.PI / 2, 1.05, 30, new Vector3(9, 1, 10), scene);
+  const cam = new ArcRotateCamera('c', Math.PI / 2, 1.05, 30, new Vector3(9, 1, 10), scene);
   cam.attachControl(engine.getRenderingCanvas()!, true);
   cam.wheelPrecision = 20;
   cam.pinchPrecision = 30;

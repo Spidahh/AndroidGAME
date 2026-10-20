@@ -99,3 +99,37 @@ Ogni fase finisce con **qualcosa che provi sul S25** (link o app) e con il tuo o
 - **Portali web** (Poki o CrazyGames) e Microsoft Store dopo l'uscita.
 
 Ogni pubblicazione su account social o campagna a pagamento parte solo con il tuo ok.
+
+## 8. Stato del lavoro
+
+| Data | Fase | Stato | Cosa è stato fatto | Prossimo passo |
+|---|---|---|---|---|
+| 2026-10-20 | 0 | ✅ Fatto | L'utente ha dato il via («via») | — |
+| 2026-10-20 | 1 | 🟡 In attesa della prova sul S25 | Vedi sotto | L'utente apre i link sul S25 e dice FPS e impressioni; poi fase 2 (M1 completo) |
+
+**Fase 1, risultati:**
+- **Link di prova:**
+  - https://holdout.magistaf.com/beta/ — corsa giocabile;
+  - `?z=40&god=1` — prova di carico con 40 zombie, eroe invulnerabile;
+  - `?view=assets` — confronto degli asset.
+- **Base di M1 funzionante:**
+  - 3 corsie, scorrimento per cambiare corsia, fuoco automatico;
+  - 4 armi ottenute aprendo casse con barra di resistenza;
+  - barili che esplodono sulle corsie vicine, barricate;
+  - 4 tipi di zombie, con il cambio di corsia dei corridori annunciato;
+  - vita dell'eroe, sconfitta e riprova.
+- **Prestazioni:**
+  - le orde usano **Vertex Animation Texture**: animazioni calcolate dalla GPU, poche chiamate di disegno;
+  - Chromium con CPU rallentata 4 volte (simulazione di un telefono medio): **60 fps con 34 zombie, 59 fps con 62**;
+  - prima della VAT erano 23 fps con 31 zombie;
+  - la GPU del telefono va verificata sul S25 reale.
+- **Asset:** gli stili di Zombie Apocalypse Kit e Toon Shooter Kit sono coerenti nel foglio di confronto.
+  - Google Drive di Quaternius blocca i download automatici, quindi i modelli vengono da Poly Pizza (stessi modelli, stesso autore). Elenco in `game/assets-src/polypizza/manifest.csv`.
+  - Cinque file risultano marcati CC-BY su Poly Pizza: si accredita Quaternius (`game/public/models/ATTRIBUTIONS.md`).
+- **Test:** 6 test automatici della simulazione superati (`npm run check`).
+
+**Da sistemare nella fase 2:**
+- arma in mano all'eroe (orientamento);
+- scala del modello del cane e di `zombie_half`;
+- peso del codice: 1,3 MB compressi, da ridurre importando solo le parti di Babylon usate;
+- compagni, capo-zombie, livelli disegnati a mano, suoni.
