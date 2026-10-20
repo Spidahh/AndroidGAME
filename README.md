@@ -1,15 +1,19 @@
-# AndroidGAME
+# AndroidGAME — City Builder Action & AFK
 
-**Stato: progettazione di un city builder con gameplay attivo.**
+**Documento unico operativo:** [GAME-DESIGN-MASTER.md](GAME-DESIGN-MASTER.md)
 
-Il gioco ruota attorno alla **crescita e specializzazione libera di una città**, usando risorse raccolte tramite modalità e minigiochi attivi (anche action). **Nessun timer per costruire**: se hai le risorse, migliori subito.
+**Concept:** costruisci una città senza timer, raccogli risorse giocando minigiochi action con eroi sbloccabili, sviluppa edifici/eroi con upgrade ramificati, produci AFK, affronta sfide giornaliere/settimanali/stagionali. Rewarded ads facoltative e monetizzazione non pay-to-win. Android first, PC possibile. Progetto per uno sviluppatore solo assistito da AI, con asset legali a costo minimo.
 
-- Upgrade numerosi, rami alternativi, stili PvE/PvP/economia e città differenti tra giocatori.
-- Monetizzazione commerciale ma non forzata: rewarded ads facoltative con ricompense extra; IAP non eccessivamente pay-to-win.
-- **Android prioritario**, compatibilità PC auspicabile con sforzo contenuto.
-- Sviluppatore singolo, senza asset né competenze di programmazione; AI e budget minimo.
-- Priorità assoluta: **gioco bello da giocare, distinguibile, pubblicizzabile e capace potenzialmente di generare ricavi**.
+**Stato reale (20/10/2026):** design master elaborato; nessun gioco/prototipo implementato, nessun risultato commerciale verificato. Ambientazione, numeri e volume V1 del master sono **proposte progettuali da testare**, non decisioni irrevocabili.
 
-**Documento di riferimento:** [PROGETTO.md](PROGETTO.md) — requisiti confermati, ipotesi, monetizzazione, piattaforme, marketing e roadmap.
+## Documentazione
+- **[GAME-DESIGN-MASTER.md](GAME-DESIGN-MASTER.md)** — SPECIFICA ATTUALE: gameplay, missioni, economia, personaggi, eventi, monetizzazione, marketing, roadmap, rischi.
+- [PROGETTO.md](PROGETTO.md) — richieste e vincoli originali (storico).
+- [PERSONAGGI-E-SQUADRA.md](PERSONAGGI-E-SQUADRA.md) — primi appunti eroi (storico).
+- [BENCHMARK-PROGRESSIONE-EVENTI.md](BENCHMARK-PROGRESSIONE-EVENTI.md) — comparazioni concorrenti (ricerca, da riverificare).
+- [RICERCA-TECNICA-LEGALE.md](RICERCA-TECNICA-LEGALE.md) — kit, asset/licenze e checklist Play Store (ricerca, audit finale ancora necessario).
 
-Le funzionalità PvP online, il motore, lo stile grafico, i minigiochi esatti e i prezzi non sono ancora decisi.
+## Prima milestone
+Importare/auditare il kit Kenney, esportare Godot su Android e PC, creare il **ciclo testabile**: missione action -> risorse -> upgrade città immediato -> save/load. Solo dopo espandere roster, secondo minigioco, AFK, eventi e ricavi.
+
+**Regola:** mai sviluppare funzionalità monetarie o PvP per mascherare un loop non divertente.
