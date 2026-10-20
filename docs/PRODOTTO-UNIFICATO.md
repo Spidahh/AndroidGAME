@@ -136,3 +136,7 @@ P5: PC, classifiche affidabili e PvP come espansioni da calcolare, non prerequis
 
 ## 12. Cosa rimane realmente da validare
 - Tuning spawn/danno/input M1 su S25 e device economico, contenuto M2, puzzle fisici, curva economica, scelta estetica finale, tenuta liveops di un solo sviluppatore, pricing, conversione install, retention, LTV e costo di acquisizione. **Questo documento completa la progettazione operativa, non dimostra che le metriche commerciali siano già raggiunte.**
+
+
+## Revisione critica del 20/10/2026
+Le priorità e i test correttivi per M1, crescita città, economia, eventi, ads e marketing sono dettagliati in [AUDIT-MIGLIORAMENTI-2026-10-20.md](AUDIT-MIGLIORAMENTI-2026-10-20.md). Le osservazioni esterne vengono tenute separate dalle ipotesi di design: non considerare superati i criteri prima di prove reali.
