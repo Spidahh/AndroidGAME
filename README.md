@@ -1,5 +1,8 @@
 # AndroidGAME
 
+**SPECIFICA DI PRODOTTO UNIFICATA (aggiornata 20/10/2026): [docs/PRODOTTO-UNIFICATO.md](docs/PRODOTTO-UNIFICATO.md)** — fonte operativa per gameplay, durata dei minigiochi, corse, città, personaggi, economia, AFK, pubblicità, monetizzazione, roadmap e controlli qualità. In caso di conflitto progettuale con gli altri documenti AI, consultare questa sintesi e il registro delle decisioni dell'utente. Il target 40+40+240 livelli è backlog, non requisito di lancio.
+
+
 **Holdout City — Real Ad Games**: i minigiochi delle pubblicità resi veri e fissi, più una città zombie da ricostruire che si espande nel tempo.
 **Stato:** progetto completo il 20/10/2026. Nessun codice finché l'utente non dà il via alla fase 1.
 
