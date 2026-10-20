@@ -238,3 +238,70 @@ Si riusano solo le parti tecniche, già verificate:
 - particelle, suoni e interfaccia.
 
 Le regole di gioco si riscrivono da zero secondo questo documento.
+
+## 10. Modello di difficoltà calcolato
+
+Richiesta dell'utente: difficoltà calcolata e intelligente, niente zombie messi a caso. Ogni orda, oggetto e pericolo di un livello è **dimensionato da queste formule** e poi **verificato in simulazione**. Le posizioni sono progettate; il caso c'è solo nell'aspetto, mai nella difficoltà.
+
+### 10.1 Grandezze
+- **Potenza di fuoco** al momento t: **P(t) = soldati(t) × DPS dell'arma(t) × bonus**.
+- **Tempo di contatto** di un gruppo: **t_c = distanza alla quale diventa bersagliabile ÷ velocità relativa** (la tua avanzata più la sua corsa verso di te). La distanza è la portata dell'arma, 30 m.
+- **Rapporto di pressione** di un gruppo nella tua corsia: **R = vita totale del gruppo ÷ (P × t_c)**.
+  - R < 1: lo abbatti tutto prima che arrivi, perdite zero.
+  - R > 1: la parte che non abbatti ti arriva addosso, e perdi soldati.
+- **Perdite previste**: **L = somma dei "soldati persi" degli zombie non abbattuti**. È calcolabile prima, quindi è proporzionale per costruzione.
+
+### 10.2 Curva del giocatore atteso
+Per ogni livello si definisce la **squadra attesa** S*(z) e l'**arma attesa** lungo il percorso, per un giocatore **medio**: quello che apre circa il 70% dei barili e sbaglia una corsia su quattro. Le orde si dimensionano sulla P*(z) di quel giocatore.
+
+### 10.3 Rapporto di pressione per fase (copiato dalla curva a tappe di Frontline)
+
+| Fase | R dell'orda principale | Significato |
+|---|---|---|
+| Costruire | 0,6 – 0,8 | Si falcia tutto con margine: si impara e si cresce |
+| Mantenere | 0,85 – 0,95 | Bisogna sparare bene e non sprecare corsie |
+| Precisione | 0,95 – 1,05 | Serve usare barili esplosivi, attacco aereo e corsia giusta |
+| Pressione | 1,05 – 1,2 | Passa bene solo chi ha costruito bene prima: effetto valanga |
+| Il muro / capo | 1,2 – 1,35 | Prova finale: servono quasi tutti i barili presi |
+
+### 10.4 Premi dimensionati sul rischio
+- Il valore di un barile soldati è scelto in modo che, con il giocatore medio, la squadra segua S*(z).
+- **Più un premio è protetto (R alto davanti), più vale.**
+- In ogni scena di scelta, le opzioni hanno un **valore atteso simile** per il giocatore medio, **guadagno meno perdite previste**, ma un **rischio diverso**:
+  - corsia sicura: premio piccolo, R basso;
+  - corsia rischiosa: premio grande, R alto.
+
+  Così la scelta conta davvero e non esiste un'opzione sempre migliore.
+
+### 10.5 Varietà della minaccia, non solo quantità
+Ogni scena combina al massimo **due problemi diversi**:
+- **massa:** molti zombie;
+- **velocità:** cani e veloci che puntano la tua corsia;
+- **corazza:** corazzati e giganti che assorbono fuoco;
+- **zona:** sputatori e pericoli a tempo che ti costringono a muoverti;
+- **sorpresa annunciata:** zombie dai tetti con l'ombra.
+
+Due problemi insieme generano decisioni; tre insieme diventano confusione. Da una scena all'altra la combinazione cambia, così non si ripete.
+
+### 10.6 Generazione e verifica
+1. Ogni livello si scrive come **sequenza di scene progettate**: tipo di scelta, problemi, fase.
+2. Un **generatore deterministico** calcola dalle formule quanti zombie e di che tipo mettere, la vita degli oggetti e il valore dei premi. Le posizioni seguono lo schema della scena.
+3. La **simulazione** gioca ogni livello con tre giocatori: bravo, medio, a caso. Si misurano R reali, perdite, squadra lungo il percorso, vittorie e cause di sconfitta.
+4. Se le misure escono dagli obiettivi del §6, il generatore **corregge le quantità** e si ripete.
+5. A mano si sistema solo ciò che i numeri non possono decidere: leggibilità e ritmo. Ogni intervento ha il suo motivo scritto.
+
+## 11. Elementi della v1 che restano, perché servono al gioco
+
+| Elemento | Resta? | Dove e perché |
+|---|---|---|
+| 6 armi (pistole, mitra, fucili d'assalto, mitragliatrici pesanti, lanciafiamme, lanciagranate) | ✅ | Last War ha lanciarazzi e lanciafiamme nei barili arma. Diventano i livelli d'arma della squadra, con caratteristiche diverse: il fuoco attraversa la fila, le granate esplodono ad area |
+| Gonfio (esplode quando muore) | ✅ dal livello 2 | Problema di **zona**: va abbattuto lontano, ed esplodendo ripulisce l'orda |
+| Sputatore (colpisce una corsia con un segnale a terra) | ✅ dal livello 4 | Problema di **zona**, come i colpi annunciati dei boss di Last War: costringe a cambiare corsia |
+| Scudato (corazza davanti) | ✅ dal livello 6 | Problema di **corazza**: serve lanciafiamme, granate o il fianco |
+| Trappole a tempo (recinzioni elettriche, seghe) | ✅ dal livello 3 | Copiate da Join Clash: costano soldati, vanno attraversate al momento giusto |
+| Zombie dai tetti con ombra | ✅ dal livello 5 | Problema di **sorpresa annunciata** |
+| Barile esplosivo e reazione a catena | ✅ | Strumento di precisione contro le masse |
+| Cassaforte | ✅ | Stella 2 e bottino per la città |
+| Compagni in corsie diverse dalla tua | ❌ | Rifiutato dall'utente (U15): ora sono la squadra nella tua corsia |
+| Scatto di Lince | ❌ | Sostituito dall'attacco aereo a carica, copiato da Zombie Lane |
+| Livelli speciali (scorta del blindato, inseguimento del ladro, medicine) | ⏸ dopo | Varianti da aggiungere dopo che la corsa base diverte, come sfide settimanali |
