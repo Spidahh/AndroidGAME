@@ -1,3 +1,5 @@
+> **ATTENZIONE — QUESTA VERSIONE È STORICA.** L'apertura con un rifugio già esistente, il primo minigioco obbligatorio e l'arrivo garantito solo ogni 30 minuti NON rappresentano più il concept. **Fonte corrente: [CITTA-DA-ZERO-MASTER.md](CITTA-DA-ZERO-MASTER.md)**. I nomi dei 12 edifici e i costi riportati sotto sono ipotesi di bilanciamento da riconciliare, non requisiti definitivi.
+
 # La città, i personaggi e l'economia
 
 Progetto di dettaglio, 20 ottobre 2026.
