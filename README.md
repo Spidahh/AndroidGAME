@@ -20,6 +20,7 @@ La revisione 2.1 del piano integra una crescita nella partita con ordine di racc
 
 | Documento | Contenuto |
 |---|---|
+| [GAME-DESIGN-MASTER.md](GAME-DESIGN-MASTER.md) | Indice master dei documenti attuali e della loro gerarchia |
 | [PIANO-DI-LAVORO.md](PIANO-DI-LAVORO.md) | Piano operativo canonico; stato del lavoro e decisioni da chiudere |
 | [SPECIFICA-ESECUTIVA.md](SPECIFICA-ESECUTIVA.md) | Manuale tecnico applicativo: setup, file, dati, numeri, stati, interfacce, servizi e verifiche |
 | [PROGETTO.md](PROGETTO.md) | Soluzione canonica: attività complete, città, progressione, interfaccia, portata e strategia |
