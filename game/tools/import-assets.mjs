@@ -22,6 +22,12 @@ const MAP = {
   container_red: [PA, 'vzzCNUB6Zn'], container_green: [PA, 'h5RUr3vlcS'], streetlight: [PA, '0lxF8Dl1jU'],
   trash_bags: [PA, 'eitNk4I4R1'], pallet: [PA, 'MwOFAOgOhg'], cinder: [PA, 'lLkVKoJsKm'], wheels: [PA, 'o1MJrkMUPN'],
   hydrant: [PA, 'DKkMQbEklp'], couch: [PA, 'ik7UZdELJE'], watertower: [PA, 'tMK8bhapAK'],
+  gun_grenade: [TS, 'ZKvWhvu4tV'], gun_flame: [TS, 'Jzj8dz4Cj0'], gun_sniper: [TS, '8sfc8FTChN'],
+  barrel_red: [TS, '1orHe0kCc1'], crate: [TS, 'NlXe0ZJGUd'], boxes: [TS, 'V9KbWC8Vd6'], boxes2: [TS, 'bs6ikOeTrR'], health: [TS, 'cc9Kueieyl'],
+  metal_fence: [TS, 'qWKhREFj7H'], broken_car: [TS, 'Y67erogmR9'], tank: [TS, 'Dc4k4CooN3'], container_small: [TS, 'B79i6fHgVU'],
+  barrier_single: [TS, 'wCUxgt2jSP'], sack_trench: [TS, 'LW3jwpPfiN'], brick_wall: [TS, '7uEf9KAU9q'], debris_pile: [TS, 'WrIiMMxyEP'],
+  dumpster: [TS, 'PKsbolkZSr'], gas_tank: [TS, 'RoCvKBGkoC'], tree: [TS, '1BkD9JnKrE'], tree2: [TS, 'QeYQEpgPcC'], tires: [TS, 'mmq7GmG1AK'],
+  shipping_container: [TS, 'dQXRtm5GbO'], pallet_toon: [TS, 'cUAsYHDqfD'], street_turn: [PA, 'm6BBMbW9rd'], crosswalk: [PA, '9zxw2NmVI6'],
 };
 
 function find(dir, id) {
@@ -35,6 +41,8 @@ const report = {};
 for (const [name, [dir, id]] of Object.entries(MAP)) {
   const src = find(dir, id);
   const dst = join(OUT, `${name}.glb`);
+  report[name] = { source: src.split(sep).join('/'), polypizza: `https://poly.pizza/m/${id}` };
+  if (existsSync(dst) && !process.argv.includes('--force')) continue;
   execFileSync('npx', ['gltf-transform', 'optimize', src, dst, '--compress', 'quantize', '--texture-compress', 'webp', '--texture-size', '512', '--simplify', 'false', '--join', 'false', '--instance', 'false', '--flatten', 'false'], { stdio: 'pipe', shell: true });
   report[name] = { source: src.split(sep).join('/'), polypizza: `https://poly.pizza/m/${id}` };
   console.log('ok', name);

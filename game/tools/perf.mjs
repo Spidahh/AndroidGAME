@@ -16,7 +16,7 @@ page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
 const cdp = await ctx.newCDPSession(page);
 await cdp.send('Emulation.setCPUThrottlingRate', { rate: throttle });
 const t0 = Date.now();
-await page.goto(`${url}?z=${zombies}&q=${quality}&god=1`);
+await page.goto(`${url}?stress=${zombies}&q=${quality}&god=1`);
 await page.waitForFunction(() => !!document.getElementById('weapon'), null, { timeout: 120000 });
 const loadMs = Date.now() - t0;
 await page.waitForTimeout(3000);

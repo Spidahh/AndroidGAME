@@ -7,3 +7,6 @@ playwright-report/
 assets-src/**/*.glb
 .env*
 !.env.example
+
+# audio originali Kenney: si riscaricano (URL in sources.csv)
+assets-src/kenney/*/

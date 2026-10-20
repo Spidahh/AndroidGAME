@@ -138,7 +138,9 @@ Come si ottengono e come crescono si decide quando definiamo i personaggi per tu
 **Stelle del livello**, senza punteggi da calcolare:
 1. ★ arrivato;
 2. ★ cassaforte aperta;
-3. ★ nessun compagno perso.
+3. ★ tutte le gabbie aperte e nessun compagno perso.
+
+Il terzo criterio è stato precisato in fase 2: con la sola condizione «nessun compagno perso» bastava non salvarne nessuno per ottenere la stella.
 
 ---
 

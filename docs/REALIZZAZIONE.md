@@ -105,7 +105,8 @@ Ogni pubblicazione su account social o campagna a pagamento parte solo con il tu
 | Data | Fase | Stato | Cosa è stato fatto | Prossimo passo |
 |---|---|---|---|---|
 | 2026-10-20 | 0 | ✅ Fatto | L'utente ha dato il via («via») | — |
-| 2026-10-20 | 1 | 🟡 In attesa della prova sul S25 | Vedi sotto | L'utente apre i link sul S25 e dice FPS e impressioni; poi fase 2 (M1 completo) |
+| 2026-10-20 | 1 | ✅ Fatto | Vedi sotto. **Prova dell'utente sul Samsung S25: 60 FPS** | — |
+| 2026-10-20 | 2 | 🟡 In attesa della prova sul S25 | M1 completo con i primi 10 livelli: vedi «Fase 2, risultati» | L'utente gioca e dice se diverte; poi fase 3 (M2 La Barricata) |
 
 **Fase 1, risultati:**
 - **Link di prova:**
@@ -133,3 +134,39 @@ Ogni pubblicazione su account social o campagna a pagamento parte solo con il tu
 - scala del modello del cane e di `zombie_half`;
 - peso del codice: 1,3 MB compressi, da ridurre importando solo le parti di Babylon usate;
 - compagni, capo-zombie, livelli disegnati a mano, suoni.
+
+**Fase 2, risultati (M1 La Corsa):**
+- **Contenuto:** 10 livelli disegnati a scene (`game/src/m1/levels.ts`), con i 4 tipi di livello:
+  - fuga, con portone finale o capo-zombie (L5, L10);
+  - recupero, con il carrello delle medicine che cambia corsia (L4, L9);
+  - scorta, con il blindato (L6);
+  - inseguimento, con il ladro (L8).
+- **Armi:** 6 (pistola, mitragliatrice, fucile a pompa, precisione, lanciafiamme, lanciagranate), ognuna con regole proprie:
+  - la pompa colpisce le corsie vicine e prende di lato gli Scudati;
+  - la precisione attraversa la fila;
+  - il fuoco brucia nel tempo;
+  - le granate esplodono ad area.
+- **Zombie:** 7 tipi più il capo (Vagante, Corridore, Bruto, Scudato, Gonfio, Sputatore, Strisciante, Ladro), ognuno riconoscibile e con un segnale prima di colpire.
+- **Oggetti da conquistare sparando:**
+  - casse arma, gabbie dei compagni, potenziamenti, bottino S/M/L, cassaforte;
+  - barra di resistenza, crepe in 3 stadi, sobbalzo quando colpiti;
+  - una cassa lasciata a metà resta danneggiata.
+- **Pericoli:** barili a catena, auto, barricate, recinzioni elettriche a tempo, acido degli Sputatori, zombie dai tetti con ombra, colpi del capo annunciati.
+- **Compagni:** fino a 2, corrono nelle corsie accanto e si possono perdere.
+- **Abilità di Lince:** scatto invulnerabile (pulsante o scorrimento verso l'alto).
+- **Stelle:** arrivato · cassaforte aperta · tutte le gabbie aperte senza perdere compagni.
+- **Ricompense:** secondo CITTA §6, salvate in un profilo locale.
+- **Interfaccia:** titolo, scelta livelli con stelle e lucchetti, HUD con vita, avanzamento, arma, potenziamenti, compagni, obiettivo speciale, pausa, risultato con stelle animate.
+- **Audio:** effetti Kenney e spari sintetizzati diversi per arma.
+- **Verifiche automatiche:**
+  - 30 test superati, tra cui un giocatore automatico che completa tutti i 10 livelli partendo dalla pistola;
+  - durate 82–129 s, nella fascia 1,5–2,5 min del progetto;
+  - il giocatore automatico ha fatto emergere problemi di bilanciamento poi corretti: resistenza della cassaforte (da 650 a 300), portoni, medicine, ladro.
+- **Prestazioni** con la CPU rallentata 6 volte e 52 zombie: **58,6 fps, frame peggiore 31 ms**. Ottenute preparando i materiali al caricamento e riusando gli oggetti (pool).
+
+**Rimandato a fasi successive:**
+- strade a 2 e 4 corsie;
+- 30 livelli in più (40 al lancio);
+- modalità infinita;
+- scelta del personaggio (gli altri 7 arrivano con la città, fase 5);
+- musica.

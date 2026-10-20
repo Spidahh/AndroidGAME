@@ -138,5 +138,105 @@
   "watertower": {
     "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Water_Tower__tMK8bhapAK.glb",
     "polypizza": "https://poly.pizza/m/tMK8bhapAK"
+  },
+  "gun_grenade": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Grenade_Launcher__ZKvWhvu4tV.glb",
+    "polypizza": "https://poly.pizza/m/ZKvWhvu4tV"
+  },
+  "gun_flame": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Short_Cannon__Jzj8dz4Cj0.glb",
+    "polypizza": "https://poly.pizza/m/Jzj8dz4Cj0"
+  },
+  "gun_sniper": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Sniper__8sfc8FTChN.glb",
+    "polypizza": "https://poly.pizza/m/8sfc8FTChN"
+  },
+  "barrel_red": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Exploding_Barrel__1orHe0kCc1.glb",
+    "polypizza": "https://poly.pizza/m/1orHe0kCc1"
+  },
+  "crate": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Crate__NlXe0ZJGUd.glb",
+    "polypizza": "https://poly.pizza/m/NlXe0ZJGUd"
+  },
+  "boxes": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Cardboard_Boxes__V9KbWC8Vd6.glb",
+    "polypizza": "https://poly.pizza/m/V9KbWC8Vd6"
+  },
+  "boxes2": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Cardboard_Boxes__bs6ikOeTrR.glb",
+    "polypizza": "https://poly.pizza/m/bs6ikOeTrR"
+  },
+  "health": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Health__cc9Kueieyl.glb",
+    "polypizza": "https://poly.pizza/m/cc9Kueieyl"
+  },
+  "metal_fence": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Metal_Fence__qWKhREFj7H.glb",
+    "polypizza": "https://poly.pizza/m/qWKhREFj7H"
+  },
+  "broken_car": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Broken_Car__Y67erogmR9.glb",
+    "polypizza": "https://poly.pizza/m/Y67erogmR9"
+  },
+  "tank": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Tank__Dc4k4CooN3.glb",
+    "polypizza": "https://poly.pizza/m/Dc4k4CooN3"
+  },
+  "container_small": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Container_Small__B79i6fHgVU.glb",
+    "polypizza": "https://poly.pizza/m/B79i6fHgVU"
+  },
+  "barrier_single": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Barrier_Single__wCUxgt2jSP.glb",
+    "polypizza": "https://poly.pizza/m/wCUxgt2jSP"
+  },
+  "sack_trench": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Sack_Trench__LW3jwpPfiN.glb",
+    "polypizza": "https://poly.pizza/m/LW3jwpPfiN"
+  },
+  "brick_wall": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Brick_Wall__7uEf9KAU9q.glb",
+    "polypizza": "https://poly.pizza/m/7uEf9KAU9q"
+  },
+  "debris_pile": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Debris_Pile__WrIiMMxyEP.glb",
+    "polypizza": "https://poly.pizza/m/WrIiMMxyEP"
+  },
+  "dumpster": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Dumpster__PKsbolkZSr.glb",
+    "polypizza": "https://poly.pizza/m/PKsbolkZSr"
+  },
+  "gas_tank": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Gas_Tank__RoCvKBGkoC.glb",
+    "polypizza": "https://poly.pizza/m/RoCvKBGkoC"
+  },
+  "tree": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Tree__1BkD9JnKrE.glb",
+    "polypizza": "https://poly.pizza/m/1BkD9JnKrE"
+  },
+  "tree2": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Tree__QeYQEpgPcC.glb",
+    "polypizza": "https://poly.pizza/m/QeYQEpgPcC"
+  },
+  "tires": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Tires__mmq7GmG1AK.glb",
+    "polypizza": "https://poly.pizza/m/mmq7GmG1AK"
+  },
+  "shipping_container": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Shipping_Container__dQXRtm5GbO.glb",
+    "polypizza": "https://poly.pizza/m/dQXRtm5GbO"
+  },
+  "pallet_toon": {
+    "source": "assets-src/polypizza/Toon-Shooter-Game-Kit-qraiSXoAru/Pallet__cUAsYHDqfD.glb",
+    "polypizza": "https://poly.pizza/m/cUAsYHDqfD"
+  },
+  "street_turn": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Street_Turn__m6BBMbW9rd.glb",
+    "polypizza": "https://poly.pizza/m/m6BBMbW9rd"
+  },
+  "crosswalk": {
+    "source": "assets-src/polypizza/Post-Apocolypse-Pack-jg0We8Clu0/Cross_walk__9zxw2NmVI6.glb",
+    "polypizza": "https://poly.pizza/m/9zxw2NmVI6"
   }
 }

@@ -1,5 +1,5 @@
 // Scorrimento a destra/sinistra (touch e mouse) e frecce/A-D da tastiera.
-export function bindLaneInput(el: HTMLElement, onMove: (dir: -1 | 1) => void) {
+export function bindLaneInput(el: HTMLElement, onMove: (dir: -1 | 1) => void, onUp?: () => void) {
   let startX = 0;
   let startY = 0;
   let active = false;
@@ -23,6 +23,9 @@ export function bindLaneInput(el: HTMLElement, onMove: (dir: -1 | 1) => void) {
       startX = e.clientX;
       startY = e.clientY;
       consumed = true;
+    } else if (onUp && dy < -THRESHOLD * 1.6 && Math.abs(dy) > Math.abs(dx) * 1.4 && !consumed) {
+      onUp();
+      consumed = true;
     }
   });
   const end = (e: PointerEvent) => {
@@ -39,5 +42,6 @@ export function bindLaneInput(el: HTMLElement, onMove: (dir: -1 | 1) => void) {
   window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') onMove(-1);
     if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') onMove(1);
+    if ((e.key === 'ArrowUp' || e.key === ' ' || e.key === 'w' || e.key === 'W') && onUp) onUp();
   });
 }

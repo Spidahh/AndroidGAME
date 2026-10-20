@@ -1,7 +1,7 @@
 // Folla di zombie con Vertex Animation Texture: tutte le istanze di un tipo si disegnano
 // con poche chiamate, e le animazioni sono calcolate dalla GPU (niente scheletri per istanza).
 import {
-  Scene, Mesh, Matrix, Quaternion, Vector3, BakedVertexAnimationManager, VertexAnimationBaker, AnimationGroup, TransformNode,
+  Scene, Mesh, Matrix, Quaternion, Vector3, BakedVertexAnimationManager, VertexAnimationBaker, AnimationGroup, TransformNode, Color3, PBRMaterial, StandardMaterial,
 } from '@babylonjs/core';
 import { Assets, fitHeight } from './assets';
 
@@ -16,6 +16,7 @@ export interface ClipInfo {
 
 export interface CrowdItem {
   x: number;
+  y?: number;
   z: number;
   yaw: number;
   clip: string;
@@ -37,7 +38,7 @@ export class Crowd {
   time = 0;
   private bound = false;
 
-  constructor(private scene: Scene, private assets: Assets, private model: string, private height: number, private wanted: string[]) {}
+  constructor(private scene: Scene, private assets: Assets, private model: string, private height: number, private wanted: string[], private tint?: Color3) {}
 
   async init() {
     const inst = await this.assets.instance(this.model);
@@ -104,6 +105,15 @@ export class Crowd {
       this.rest = world;
     }
     this.rest.invertToRef(this.restInv);
+    // colore distintivo del tipo di zombie (materiale proprio della folla)
+    if (this.tint) {
+      for (const mesh of this.meshes) {
+        const mat = mesh.material?.clone(`${mesh.material.name}-${this.model}-tint`);
+        if (mat instanceof PBRMaterial) mat.albedoColor = mat.albedoColor.multiply(this.tint);
+        else if (mat instanceof StandardMaterial) mat.diffuseColor = mat.diffuseColor.multiply(this.tint);
+        if (mat) mesh.material = mat;
+      }
+    }
     // il resto del modello originale (nodi, scheletri) non serve più
     for (const [, g] of inst.anims) g.dispose();
     inst.root.getChildMeshes(false).forEach((m) => {
@@ -129,7 +139,7 @@ export class Crowd {
     for (let i = 0; i < items.length; i++) {
       const it = items[i];
       // finale = rest × (R · S · T) espresso nello spazio locale della mesh: inst = rest⁻¹... (convenzione vettore-riga)
-      Matrix.ComposeToRef(new Vector3(it.scale, it.scale, it.scale), Quaternion.FromEulerAngles(0, it.yaw, 0), new Vector3(it.x, 0, it.z), this.tmpW);
+      Matrix.ComposeToRef(new Vector3(it.scale, it.scale, it.scale), Quaternion.FromEulerAngles(0, it.yaw, 0), new Vector3(it.x, it.y ?? 0, it.z), this.tmpW);
       // v·inst·rest = v·rest·W  →  inst = rest·W·rest⁻¹
       this.rest.multiplyToRef(this.tmpW, this.tmpM);
       this.tmpM.multiplyToRef(this.restInv, this.tmpM);

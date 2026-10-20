@@ -1,0 +1,13 @@
+import { chromium } from '@playwright/test';
+const [url, out1, out2] = process.argv.slice(2);
+const browser = await chromium.launch();
+const ctx = await browser.newContext({ viewport: { width: 393, height: 852 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+const page = await ctx.newPage();
+await page.addInitScript(() => localStorage.setItem('holdout.profile.v1', JSON.stringify({ version: 1, materials: 620, food: 310, levels: { 1: { stars: 3, starFlags: [true, true, true], completions: 2 }, 2: { stars: 2, starFlags: [true, true, false], completions: 1 }, 3: { stars: 1, starFlags: [true, false, false], completions: 1 } }, settings: { sound: true, vibration: true }, tutorialSeen: true })));
+await page.goto(url);
+await page.waitForTimeout(2500);
+await page.screenshot({ path: out1 });
+await page.click('#play');
+await page.waitForTimeout(800);
+await page.screenshot({ path: out2 });
+await browser.close();

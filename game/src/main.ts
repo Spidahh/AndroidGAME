@@ -1,124 +1,211 @@
 import { Engine } from '@babylonjs/core';
-import { RunSim, WEAPONS } from './m1/sim';
+import { RunSim, SimEvent } from './m1/sim';
 import { RunView } from './m1/view';
+import { LEVELS } from './m1/levels';
+import { LevelDef, validateLevel } from './m1/level';
+import { WEAPONS, POWERS } from './m1/defs';
 import { bindLaneInput } from './input';
 import { runContactSheet } from './contact-sheet';
 import { CONFIG } from './config';
+import { audio } from './audio';
+import { loadProfile, saveProfile, recordResult } from './profile';
+import { showTitle, showLevels, showLoading, showPause, showResult, Hud } from './ui/screens';
+import { WEAPON_ICON, POWER_ICON, ICON } from './ui/icons';
 
 const params = new URLSearchParams(location.search);
 const canvas = document.getElementById('game') as HTMLCanvasElement;
-const hud = document.getElementById('hud')!;
+const profile = loadProfile();
+audio.setEnabled(profile.settings.sound);
 
-// Qualità: scala di rendering rispetto ai pixel del dispositivo.
+if (import.meta.env.DEV) for (const l of LEVELS) for (const err of validateLevel(l)) console.warn(err);
+
 const QUALITY = { alta: 1, media: 0.75, bassa: 0.6 } as const;
 type Quality = keyof typeof QUALITY;
-let quality: Quality = (params.get('q') as Quality) in QUALITY ? (params.get('q') as Quality) : 'alta';
-
+const quality: Quality = (params.get('q') as Quality) in QUALITY ? (params.get('q') as Quality) : 'alta';
 const engine = new Engine(canvas, true, { stencil: false, preserveDrawingBuffer: false, powerPreference: 'high-performance', adaptToDeviceRatio: false });
-function applyQuality() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
-  engine.setHardwareScalingLevel(1 / (dpr * QUALITY[quality]));
-}
-applyQuality();
+engine.setHardwareScalingLevel(1 / (Math.min(window.devicePixelRatio || 1, 2.5) * QUALITY[quality]));
 window.addEventListener('resize', () => engine.resize());
+document.addEventListener('pointerdown', () => void audio.unlock(), { passive: true });
+
+// stato della partita in corso
+let sim: RunSim | null = null;
+let view: RunView | null = null;
+let hud: Hud | null = null;
+let paused = false;
+let current: LevelDef | null = null;
+
+bindLaneInput(
+  canvas,
+  (d) => {
+    if (!paused) sim?.moveLane(d);
+  },
+  () => {
+    if (!paused) sim?.dash();
+  },
+);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && sim && !sim.over && !paused) pause();
+});
+
+engine.runRenderLoop(() => {
+  if (view) view.scene.render();
+});
 
 if (params.get('view') === 'assets') {
-  runContactSheet(engine, hud);
+  runContactSheet(engine, document.getElementById('hud')!);
+} else if (params.get('stress')) {
+  // prova di carico: ?stress=40&god=1
+  void startLevel(
+    { id: 0, name: 'Prova di carico', type: 'fuga', zone: 'Periferia', length: 1e9, speed: [6.5, 6.5], intro: 'Prova di prestazioni', events: [], finale: { kind: 'none' } },
+    Number(params.get('stress')),
+  );
+} else if (params.get('level')) {
+  void startLevel(LEVELS[Math.max(0, Math.min(LEVELS.length - 1, Number(params.get('level')) - 1))]);
 } else {
-  startRun();
+  showTitle(() => menu());
 }
 
-async function startRun() {
-  hud.innerHTML = `<div class="center"><h1>HOLDOUT CITY</h1><div id="load">Caricamento…</div></div>`;
-  const view = new RunView(engine);
-  await view.load((d, t) => {
-    const el = document.getElementById('load');
-    if (el) el.textContent = `Caricamento… ${Math.round((d / t) * 100)}%`;
-  });
+function menu() {
+  disposeRun();
+  showLevels(
+    LEVELS,
+    profile,
+    (l) => void startLevel(l),
+    () => {
+      profile.settings.sound = !profile.settings.sound;
+      audio.setEnabled(profile.settings.sound);
+      saveProfile(profile);
+    },
+  );
+}
 
-  let target = Number(params.get('z') ?? 25);
-  const invulnerable = params.get('god') === '1';
-  let sim = new RunSim({ targetZombies: target, seed: Date.now() & 0xffff, invulnerable });
-  const debug = params.get('debug') !== '0';
-  if (import.meta.env.DEV) Object.assign(window, { __scene: view.scene, __sim: () => sim });
+function disposeRun() {
+  view?.dispose();
+  view = null;
+  sim = null;
+  hud = null;
+  paused = false;
+}
 
-  hud.innerHTML = `
-    <div class="hud-top"><div class="bar" id="hp"><i></i></div><div class="weapon" id="weapon"></div></div>
-    <div class="hint" id="hint">Scorri a destra o a sinistra per cambiare corsia</div>
-    ${debug ? '<div class="debug" id="dbg"></div>' : ''}`;
-  const hpEl = document.querySelector('#hp > i') as HTMLElement;
-  const wEl = document.getElementById('weapon')!;
-  const dbg = document.getElementById('dbg');
-  const hint = document.getElementById('hint')!;
-  setTimeout(() => (hint.style.opacity = '0'), 4000);
-
-  if (dbg) {
-    dbg.addEventListener('click', (e) => {
-      const b = (e.target as HTMLElement).dataset.act;
-      if (b === 'z') {
-        target = target >= 80 ? 20 : target + 20;
-        sim.opts.targetZombies = target;
-      }
-      if (b === 'q') {
-        quality = quality === 'alta' ? 'media' : quality === 'media' ? 'bassa' : 'alta';
-        applyQuality();
-      }
-    });
+async function startLevel(level: LevelDef, stress = 0) {
+  disposeRun();
+  current = level;
+  const progress = showLoading(level.name);
+  const v = new RunView(engine, level.zone);
+  await v.load((d, t) => progress(d / t));
+  const s = new RunSim(level, { seed: (Date.now() & 0xffff) + level.id, invulnerable: params.get('god') === '1', stressZombies: stress || undefined, startAt: import.meta.env.DEV ? Number(params.get('at') ?? 0) : 0 });
+  view = v;
+  sim = s;
+  hud = new Hud(level, pause, () => sim?.dash());
+  if (import.meta.env.DEV) Object.assign(window, { __scene: v.scene, __sim: () => sim });
+  let dbg: HTMLElement | null = null;
+  if (params.get('debug') === '1' || stress > 0) {
+    dbg = document.createElement('div');
+    dbg.className = 'debug';
+    document.getElementById('hud')!.appendChild(dbg);
   }
-
-  bindLaneInput(canvas, (d) => sim.moveLane(d));
 
   const STEP = 1 / 60;
   let acc = 0;
-  let lastWeapon = '';
-  let fpsAcc = 0;
   let frames = 0;
-  let fpsShown = 0;
+  let fpsAcc = 0;
   let worst = 0;
-
-  view.scene.onBeforeRenderObservable.add(() => {
+  let ended = false;
+  v.scene.onBeforeRenderObservable.add(() => {
+    if (sim !== s || view !== v) return;
     const dt = Math.min(engine.getDeltaTime() / 1000, 0.1);
-    acc += dt;
-    while (acc >= STEP) {
-      sim.step(STEP);
-      acc -= STEP;
+    if (!paused) {
+      acc += dt;
+      while (acc >= STEP) {
+        s.step(STEP);
+        acc -= STEP;
+      }
     }
-    view.sync(sim, dt);
-
-    hpEl.style.width = `${(sim.hp / sim.maxHp) * 100}%`;
-    if (sim.weapon !== lastWeapon) {
-      lastWeapon = sim.weapon;
-      wEl.textContent = WEAPONS[sim.weapon].name;
-      wEl.classList.remove('flash');
-      void wEl.offsetWidth;
-      wEl.classList.add('flash');
+    const events = s.drainEvents();
+    v.sync(s, paused ? 0 : dt, events);
+    hud?.update(s);
+    for (const e of events) toastFor(e);
+    if (s.over && !ended) {
+      ended = true;
+      setTimeout(() => {
+        if (sim === s) finishLevel(level, s);
+      }, s.status === 'won' ? 900 : 1300);
     }
     if (dbg) {
       frames++;
       fpsAcc += dt;
       worst = Math.max(worst, dt);
       if (fpsAcc >= 0.5) {
-        fpsShown = Math.round(frames / fpsAcc);
-        const zs = sim.zombies.filter((z) => z.alive).length;
-        dbg.innerHTML = `FPS ${fpsShown}  (peggiore ${Math.round(worst * 1000)} ms)\nzombie ${zs}  proiettili ${sim.bullets.length}\nqualità ${quality}  build ${CONFIG.build}<button data-act="z">Zombie obiettivo: ${target}</button><button data-act="q">Qualità: ${quality}</button>`;
+        dbg.textContent = `FPS ${Math.round(frames / fpsAcc)} (peggiore ${Math.round(worst * 1000)} ms)\nzombie ${s.zombies.filter((z) => z.alive).length}  qualità ${quality}\nbuild ${CONFIG.build}`;
         frames = 0;
         fpsAcc = 0;
         worst = 0;
       }
     }
-    if (sim.over && !document.getElementById('over')) {
-      const el = document.createElement('div');
-      el.className = 'center';
-      el.id = 'over';
-      el.innerHTML = `<h1>Sei caduto</h1><button id="again">Riprova</button>`;
-      hud.appendChild(el);
-      document.getElementById('again')!.onclick = () => {
-        el.remove();
-        view.reset();
-        sim = new RunSim({ targetZombies: target, seed: Date.now() & 0xffff, invulnerable });
-      };
-    }
   });
+}
 
-  engine.runRenderLoop(() => view.scene.render());
+function toastFor(e: SimEvent) {
+  if (!hud) return;
+  switch (e.type) {
+    case 'weapon':
+      hud.toast(WEAPONS[e.weapon].name, 'good', WEAPON_ICON[e.weapon]);
+      break;
+    case 'power':
+      hud.toast(POWERS[e.power], 'good', POWER_ICON[e.power]);
+      break;
+    case 'companionJoined':
+      hud.toast('Sopravvissuto salvato!', 'good', ICON.survivor);
+      break;
+    case 'companionLost':
+      hud.toast('Hai perso un compagno', 'bad', ICON.survivor);
+      break;
+    case 'loot':
+      if (e.size === 'safe') hud.toast('Cassaforte aperta!', 'good', ICON.materials);
+      break;
+    case 'hint':
+      hud.toast(e.text, 'info');
+      break;
+    case 'boss':
+      hud.toast('Il capo dell’orda!', 'bad');
+      break;
+    case 'medicine':
+      if (e.state === 'appear') hud.toast('Le medicine! Aprile prima che scappino', 'info');
+      if (e.state === 'opened') hud.toast('Medicine recuperate!', 'good');
+      break;
+    default:
+      break;
+  }
+}
+
+function pause() {
+  if (!sim || sim.over || paused) return;
+  paused = true;
+  showPause(
+    () => (paused = false),
+    () => {
+      if (current) void startLevel(current);
+    },
+    () => menu(),
+  );
+}
+
+function finishLevel(level: LevelDef, s: RunSim) {
+  if (level.id === 0) return;
+  const won = s.status === 'won';
+  const previous = [...(profile.levels[level.id]?.starFlags ?? [false, false, false])] as [boolean, boolean, boolean];
+  const flags = s.starFlags;
+  const { reward } = recordResult(profile, level.id, won, flags, s.lootBonus);
+  const idx = LEVELS.findIndex((l) => l.id === level.id);
+  showResult({
+    won,
+    reason: s.endReason,
+    flags,
+    previous,
+    reward,
+    hasNext: idx < LEVELS.length - 1,
+    onNext: () => void startLevel(LEVELS[idx + 1]),
+    onRetry: () => void startLevel(level),
+    onMenu: () => menu(),
+  });
 }
