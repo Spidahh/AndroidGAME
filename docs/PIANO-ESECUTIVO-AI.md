@@ -155,3 +155,88 @@ Sei lead game developer e product owner tecnico del gioco Holdout City nel repos
 5. Per ogni modifica dichiara: obiettivo, file toccati, screenshot/build demo, test eseguiti, numeri misurati, bug non risolti, compatibilità con il progetto.
 6. **Non aggiungere idee, risorse, valute, abilità o modalità fuori da questo piano** senza motivazione, impatto economico e verifica della decisione dell'utente. Non nascondere difetti dietro percentuali, difficoltà arbitraria o molti livelli.
 7. Implementa una V1 DIVERTENTE e commerciante che rispetta i vincoli; qualità e giocabilità prima della quantità.
+
+
+---
+
+# REVISIONE CRITICA V1.1 — CONTRADDIZIONI RISOLTE E NUOVI COLLEGAMENTI
+20 ottobre 2026. **Questa sezione modifica espressamente le parti precedenti quando contrastanti.** Le ragioni sono verificate contro il resto della documentazione e le lamentele documentate dei giocatori, non aggiunte decorative.
+
+## R1. Grave: 30 chiavi per un nuovo eroe + nuove chiavi solo tramite modalità = progressione frustrante
+**Precedente**: una chiave = un frammento e soglia 30, ma prima alternativa «durante la prima settimana». Non determina il ritmo e, se si guadagna 1 chiave/die, impone 30 giorni.
+**Correzione DEFINITA**:
+- Primo eroe giocabile: Lince. Un secondo eroe (Falco o Rocca, da scegliere mediante una missione narrativa) entra come **ricompensa garantita entro circa 20–30 minuti di gioco attivo cumulato**, non come gacha.
+- Dal terzo eroe: contratto radio a obiettivi chiari + raccolta **frammenti dedicati o universali**, soglia proposta 12 per prova, non 30 chiavi separate e 30 frammenti. Le **chiavi non sono una seconda tassa**: ogni chiave è un credito di reclutamento convertibile direttamente in un frammento universale oppure in una scelta fra due dossier dal contenuto noto. No chiavi e frammenti obbligatori contemporaneamente per lo stesso sblocco.
+- Gli eroi NON sbloccano la possibilità di assegnare più lavoratori a miniere/fonderie; questo dipende dagli edifici. Hero skill solo vantaggi attivi e piccole specialità, **nessun lock economico**.
+- Test: senza Radio migliorata e senza acquisti è possibile sbloccare almeno 2 eroi e tutte le produzioni di base in tempi ragionevoli. Il ritmo dei successivi è tarato nel simulatore.
+**Conferma esterna**: reclami Frozen City su miniere/fonderie rallentate dalla mancanza casuale di eroi https://apps.apple.com/gb/app/frozen-city/id1637040599?platform=iphone&see-all=reviews .
+
+## R2. Contraddizione: «5 modalità permanenti» vs «solo 3 al lancio» e shop promesso per 5
+**Correzione DEFINITA**: la prima pubblicazione commerciale promette **M1 Corsa, M2 Barricata, M3 Tira il perno** e città. M4 e M5 restano roadmap pubblicamente annunciabile SOLO come «in sviluppo» con cautela, mai icone tappabili finte o screenshot nello store. In V1 le 3 modalità sono permanenti e ripetibili. Per il nome store «Real Ad Games» non promettere «tutti i giochi delle ads».
+- Prima beta: città + M1. Release candidate: M1/M2/M3 divertenti + economia/eroi.
+- M1 resta un minigioco di 60–90s; M2 90–150s; M3 20–45s.
+- Non creare 40+40+240 livelli prima della verifica. Meglio 3 sistemi profondi e pochi incontri rifiniti.
+
+## R3. Contraddizione: il city builder è attivo ma la raccolta manuale finisce presto, e si rischia l'autoplay
+**Correzione DEFINITA**: tre famiglie di interazioni urbane sempre disponibili, con costi/opportunità:
+A) **Progetti di recupero a tappe**: liberare strada, pozzo o giacimento ha 2–3 piccoli incarichi (reperire materiale, assegnare operatori, scelta intervento), dà un risultato permanente visibile; dopo aver finito un progetto ce n'è un altro in uno dei settori disponibili.
+B) **Contratti di produzione**: consegna richiesta dai residenti (viveri, componenti, attrezzi) con scelta consegnare o spendere su potenziamento; consegna è sempre facoltativa, premio modesto + attrattività; non moneta aggiuntiva.
+C) **Layout/assegnazione**: lavoratori, strade, spostamenti, moduli e ricette, effetti immediati. Non introdurre eventi casuali punitivi come unica attività cittadina.
+**La raccolta iniziale delle macerie è finita**, perché non deve diventare un pulsante di risorse infinite. Progetti e contratti sostituiscono il loop tap-to-claim. Riutilizzano gli stessi asset e sistemi; non aggiungere 10 minigiochi in città.
+
+## R4. Rischio: il mix sempre più efficiente forza chi ama solo city oppure solo arcade
+**Decisione**: ogni materiale usato per progredire nella città ha due canali di acquisizione, almeno uno cittadino e uno missione/scambio. Le missioni possono premiare Schemi/Chiavi più velocemente, ma **nessun progetto essenziale deve esigere un drop casuale**.
+- Il prodotto non deve imporre lo stesso numero di sessioni ad attività diverse; bilanciare per **tempo di attenzione attiva** e qualità, non per quantità di tocchi.
+- Profilo city-only non deve avere softlock; può avere progressione più lenta e differenze di estetica/build, ma non essere penalizzato con ricerca impossibile.
+- L'economia ha tre profili con report: city-only, arcade-only (che torna in città per spendere), misto. Nessun profilo scade in 30 giorni.
+
+## R5. Problema della produzione AFK: persone e fabbriche senza operatore bloccano risorse anche a tutorial completato
+**Correzione**:
+- Primo superstite garantito, secondo guadagnabile con progetto cittadino anche senza M1. Una riserva di materiali base è recuperabile da contratti e sgombero, mai produzione +0 permanente senza soluzione.
+- Edifici produttivi richiedono lavoratori; **il lavoro può essere riassegnato istantaneamente gratis**. In condizioni di carenza UI mostra «Sposta 1 addetto dall'Orto alla Miniera» come suggerimento facoltativo.
+- Nessun personaggio eroico speciale per poter aprire uno slot operaio. Mai spopolamento durante offline.
+- Se casa piena, nuova persona salvata va in **lista ospiti** senza perdita finché costruisci alloggio; nessun countdown.
+
+## R6. M1 e città: upgrade armeria rende inutile scegliere le armi durante la corsa
+**Soluzione**: l'Armeria sblocca il **pool delle opzioni offerte durante la run** e un loadout base selezionabile, ma la corsa continua a offrire pickup alternativi con svantaggi. L'upgrade non garantisce arma top in partenza e non raddoppia DPS senza limite.
+- M1 calibra il budget nemici sulla difficoltà selezionata con range ragionevole, NON sul power score nascosto per penalizzare chi migliora.
+- Vincere una run con un nuovo eroe può avere una variante obiettivo, non buff lineare che automatizza tutto.
+
+## R7. Economie e tecnologie: due bonus analoghi inutili o arbitraggio
+**Decisione**: un registro di dipendenze centralizzato; ogni edificio/modulo/ricerca esplicita 1 funzione principale e al massimo 1 secondaria. Niente doppione «+5% raccolta» da 5 sistemi.
+- Produrre energia NON drena risorsa per tenere accesi edifici di base: Energia è materiali tecnologici usati per sblocchi, non una barra che può spegnere la città.
+- Ricette e Mercato devono rispettare `valore_output < valore_input` nella conversione reversibile, incluse ricerche e sconti. Test per cicli arbitraggio.
+- Schemi sono progetti a traguardi, non risorsa richiesta da ogni micro-upgrade; altrimenti diventano un bottleneck universale.
+- Ogni quartiere offre almeno un'opportunità nuova (giacimento, edificio, missione, miglioramento visivo), non solo 25 spazi vuoti.
+
+## R8. Premi: ripetibilità vs economia infinita
+**Scelta**: le modalità restano sempre rigiocabili senza energia, MA il payout per minuto deve rispettare la progressione.
+- Ricompensa base per completamento e bonus per abilità, con curva di tier in base al progresso cittadino.
+- La prima vittoria dà bonus di scoperta; le repliche non diventano inutili (non scendere a 0 o bloccare dopo 1 al giorno).
+- Se i giocatori farmano sempre lo stesso livello più facile, un **sistema di contratti mirati** rende vantaggiosa la varietà senza azzerare i premi base. Nessuna penalità nascosta al ripetitore.
+- Calcolare rendimento/minuto e includere tempi menu/transizioni. Verificare exploit restart, crash e back-button Android.
+
+## R9. IAP/ADS: tre prodotti in V1 ma una delle feature premium richiede costosa registrazione video
+**Correzione**: non vendere funzioni non implementate. Pass Comandante al lancio solo **preset layout città salvabili (3) + estetiche interfaccia e statistiche avanzate** se effettivamente finite. **Raccolta unica, spostamento strutture, fast-forward animazioni e condivisione screenshot restano free**. L'editor replay e clip non è promessa commerciale iniziale.
+- Se il Pass è troppo debole per convertire, NON introdurre ritardi artificiali alla versione free: espandere solo con decorazioni premium o sospendere Pass, piuttosto che degradare UX.
+- Rewarded +30% solo Rottami/Viveri/Metallo in una quantità chiara, max 3 al giorno, senza obbligo per sostenere gli upgrade.
+- Regole Google rewarded e fiducia giocatori: https://admob.google.com/home/resources/rewarded-ads-playbook/ ; https://publishers.google.com/insights/quality-drives-value/ .
+
+## R10. Tecnica e asset: limitare lo scope prima di comprare arte
+**Decisione**: 1 kit centrale di edifici modulari, 1 pack superstiti/zombie compatibile, 1 palette e set shader per tutto il gioco. Un artista AI o developer deve prima produrre uno screenshot vero **falò+tenda+orto+miniera+officina con personaggi** coerente prima di importare 300 asset.
+- Rig/animazioni compatibili e scala su Babylon verificate con una scena tecnica; audit licenze per ogni file, soprattutto componenti PolyPizza che possono essere CC-BY.
+- Niente NPC con pathfinding infinito su tutta la mappa: solo nelle zone visibili, simulazione aggregata per le produzioni.
+- Tablet e schermi diversi: camera zoom e safe area responsive, no UI pixel-specific.
+- Stato progetto e bug legati a commit e prove reali: gli script bot non valutano divertimento.
+
+## R11. Misure non arbitrarie da annotare
+Strutturare dashboard QA con: tempo prima tenda; tempo primo abitante; completamento M1; 2ª run volontaria; cambio lavoratore volontario; costruzioni/minuto; fonti di Rottami; tempo sblocco secondo eroe; sessione; % utenti che fanno solo city, solo minigiochi, misto; ad opt-in; D1/D7. Ogni numero target è un **obiettivo di test, non un fatto**.
+**Il problema più importante da misurare**: quanti utenti passano da «ho costruito una tenda» a «voglio tornare domani per il mio accampamento» senza essere spinti da timer.
+
+## R12. Verifica incrociata con i concorrenti
+- Frozen City: eroi casuali che bloccano l'estrazione sono lamentati negli store e recensioni https://apps.apple.com/gb/app/frozen-city/id1637040599?platform=iphone&see-all=reviews ; https://justuseapp.com/en/app/1637040599/frozen-city/reviews .
+- Last War: giocatori vogliono poter rigiocare Frontline senza limitazioni https://www.reddit.com/r/LastWarMobileGame/comments/1u6orgs/frontline_breakthrough/ ; bug di corsie che infliggono danni inevitabili https://apps.apple.com/md/app/last-war-survival/id6448786147?platform=iphone&see-all=reviews .
+- Il manuale Google Ads sottolinea il flusso richiesta -> visualizzazione -> ricompensa -> utilizzo: la nostra reward deve essere spendibile in un miglioramento visibile https://admob.google.com/home/resources/rewarded-ads-playbook/ .
+
+## R13. Criterio di completamento revisione
+Il progettista AI deve rispondere per ogni feature a quattro domande: «cosa decide l'utente?», «cosa rinuncia scegliendo?», «quale conseguenza vede subito?», «perché vuole tornarci?» Se non ci sono risposte concrete, la feature va tagliata, semplificata o collegata ad altri sistemi. Non aumentare numero risorse, tier, livelli o ads come sostituto.
