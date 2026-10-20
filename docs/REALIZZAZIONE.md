@@ -106,7 +106,8 @@ Ogni pubblicazione su account social o campagna a pagamento parte solo con il tu
 |---|---|---|---|---|
 | 2026-10-20 | 0 | ✅ Fatto | L'utente ha dato il via («via») | — |
 | 2026-10-20 | 1 | ✅ Fatto | Vedi sotto. **Prova dell'utente sul Samsung S25: 60 FPS** | — |
-| 2026-10-20 | 2 | 🟡 In attesa della prova sul S25 | M1 completo con i primi 10 livelli: vedi «Fase 2, risultati» | L'utente gioca e dice se diverte; poi fase 3 (M2 La Barricata) |
+| 2026-10-20 | 2 | ❌ Bocciato dall'utente (U15) | M1 completo con i primi 10 livelli: vedi «Fase 2, risultati» | L'utente gioca e dice se diverte; poi fase 3 (M2 La Barricata) |
+| 2026-10-20 | 2 v2 | 🟡 Online, da provare sul S25 | M1 rifatto sul modello Last War / Last Z: vedi «Fase 2 v2, risultati» | Prova dell'utente; intanto M2, rompicapi e città |
 
 **Fase 1, risultati:**
 - **Link di prova:**
@@ -170,3 +171,20 @@ Ogni pubblicazione su account social o campagna a pagamento parte solo con il tu
 - modalità infinita;
 - scelta del personaggio (gli altri 7 arrivano con la città, fase 5);
 - musica.
+
+**Fase 2 v2, risultati (M1 La Corsa rifatta, docs/M1-CORSA.md v2):**
+- **Link:** https://holdout.magistaf.com/beta/ (livello diretto: `?level=4`; strumenti: `?debug=1`, `?god=1`).
+- **Squadra = un soldato con il numero «×N»** sopra (richiesta dell'utente), non tanti modelli. Il numero è vita e potenza di fuoco.
+- **Barili e portoni con il numero che scende** mentre spari; sopra c'è cosa danno (+N soldati, arma, gelo). Se ci arrivi addosso intatti costano soldati.
+- **Livelli generati con difficoltà calcolata** (`gen.ts`, §10 del documento): rapporto di pressione per fase, curva attesa del giocatore medio, taratura automatica (`tools/tune.ts` → `tuning.json`).
+- **Misure con giocatori simulati** (`tools/measure.ts`, 8 semi per livello):
+  - il bravo vince 8/8 in tutti i 10 livelli;
+  - il medio vince il 50–87 %;
+  - chi gioca a caso vince 0–2 su 8;
+  - zombie visibili: in media 28–56, picchi 83–150; durata 60–110 s.
+  - Limite noto: L5 e L10 (capo) sono al tetto della taratura (2,2): il medio vince più del previsto, L3 e L8 al minimo (0,6).
+- **Prestazioni** (Chromium, CPU rallentata 4 volte, nel tratto più affollato con 140–200 zombie): 52–60 FPS.
+  - Corretto: il soldato disegnava insieme tutte le 14 armi del modello (148 mesh attive invece di 195, tempo di disegno dimezzato).
+  - Buffer delle folle preallocati, niente oggetti temporanei per zombie a ogni frame, etichette senza ricalcolo della pagina.
+  - Strumenti: `tools/perf.mjs`, `tools/frame.mjs` (ripartizione per frame), `tools/profile.mjs` (profilo CPU), `tools/meshes.mjs`.
+- **Test:** 20 test (regole, livelli validi, difficoltà misurata con i bot su tutti i livelli).

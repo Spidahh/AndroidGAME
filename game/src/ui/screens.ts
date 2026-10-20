@@ -1,6 +1,6 @@
 // Schermate DOM: titolo, scelta livelli, HUD, pausa, risultato. Testi senza numeri da calcolare.
-import { ICON, WEAPON_ICON, POWER_ICON } from './icons';
-import { WEAPONS, POWERS, PowerId } from '../m1/defs';
+import { ICON, WEAPON_ICON } from './icons';
+import { WEAPONS, AIRSTRIKE } from '../m1/defs';
 import type { RunSim } from '../m1/sim';
 import type { LevelDef } from '../m1/level';
 import type { Profile } from '../profile';
@@ -19,7 +19,7 @@ const click = (el: HTMLElement | null, fn: () => void) =>
     fn();
   });
 
-const TYPE_LABEL: Record<string, string> = { fuga: 'Fuga', recupero: 'Recupero', scorta: 'Scorta', inseguimento: 'Inseguimento' };
+const PHASE_LABEL: Record<string, string> = { build: 'Costruisci la squadra', maintain: 'Tieni la squadra', precision: 'Scelte precise', pressure: 'Sotto pressione', wall: 'Prova finale' };
 
 export function showLoading(text = 'Caricamento') {
   root().innerHTML = '';
@@ -54,7 +54,7 @@ export function showLevels(levels: LevelDef[], profile: Profile, onPick: (l: Lev
       return `<button class="lvl ${open ? '' : 'locked'} ${l.finale.kind === 'boss' ? 'boss' : ''}" data-id="${l.id}" ${open ? '' : 'disabled'}>
         <span class="num">${l.id}</span>
         <span class="lname">${l.name}</span>
-        <span class="ltype">${TYPE_LABEL[l.type]} · ${l.zone}</span>
+        <span class="ltype">${l.finale.kind === 'boss' ? 'Capo' : PHASE_LABEL[l.phase]} · ${l.zone}</span>
         <span class="stars">${open ? stars : `<i class="lk">${ICON.lock}</i>`}</span>
       </button>`;
     })
@@ -75,53 +75,48 @@ export function showLevels(levels: LevelDef[], profile: Profile, onPick: (l: Lev
 
 export class Hud {
   private el: HTMLElement;
-  private hp: HTMLElement;
   private prog: HTMLElement;
   private weapon: HTMLElement;
-  private powers: HTMLElement;
-  private comps: HTMLElement;
-  private dashBtn: HTMLElement;
-  private dashFill: HTMLElement;
+  private squad: HTMLElement;
+  private strikeBtn: HTMLElement;
+  private strikeFill: HTMLElement;
   private objective: HTMLElement;
   private objFill: HTMLElement;
+  private objText: HTMLElement;
   private toastBox: HTMLElement;
   private lastWeapon = '';
-  private lastPowers = '';
-  private lastComps = '';
+  private lastSquad = -1;
   private lastObj = '';
+  private lastReady = false;
 
-  constructor(level: LevelDef, onPause: () => void, onDash: () => void) {
+  constructor(level: LevelDef, onPause: () => void, onStrike: () => void) {
     root().innerHTML = '';
     this.el = h(`<div class="hudwrap">
       <div class="hud-top">
         <button class="icon-btn" id="pause">${ICON.pause}</button>
-        <div class="bars">
-          <div class="bar hp"><i></i></div>
-          <div class="bar prog"><i></i><b class="flag"></b></div>
-        </div>
+        <div class="squadchip"><i>${ICON.soldier}</i><b id="squadn">3</b></div>
+        <div class="bars"><div class="bar prog"><i></i><b class="flag"></b></div></div>
         <div class="weapon" id="weapon"></div>
       </div>
-      <div class="hud-row"><div class="powers" id="powers"></div><div class="comps" id="comps"></div></div>
       <div class="objective" id="obj"><span id="objtext"></span><div class="bar small"><i id="objfill"></i></div></div>
       <div class="toasts" id="toasts"></div>
       <div class="intro" id="intro"><b>${level.name}</b><span>${level.intro}</span></div>
-      <button class="dash" id="dash">${ICON.dash}<i id="dashfill"></i></button>
+      <button class="dash strike" id="strike">${ICON.airstrike}<i id="strikefill"></i></button>
     </div>`);
     root().appendChild(this.el);
-    this.hp = this.el.querySelector('.hp > i')!;
     this.prog = this.el.querySelector('.prog > i')!;
     this.weapon = this.el.querySelector('#weapon')!;
-    this.powers = this.el.querySelector('#powers')!;
-    this.comps = this.el.querySelector('#comps')!;
-    this.dashBtn = this.el.querySelector('#dash')!;
-    this.dashFill = this.el.querySelector('#dashfill')!;
+    this.squad = this.el.querySelector('#squadn')!;
+    this.strikeBtn = this.el.querySelector('#strike')!;
+    this.strikeFill = this.el.querySelector('#strikefill')!;
     this.objective = this.el.querySelector('#obj')!;
     this.objFill = this.el.querySelector('#objfill')!;
+    this.objText = this.el.querySelector('#objtext')!;
     this.toastBox = this.el.querySelector('#toasts')!;
     click(this.el.querySelector('#pause'), onPause);
-    this.dashBtn.addEventListener('pointerdown', (e) => {
+    this.strikeBtn.addEventListener('pointerdown', (e) => {
       e.stopPropagation();
-      onDash();
+      onStrike();
     });
     setTimeout(() => this.el.querySelector('#intro')?.classList.add('gone'), 3800);
   }
@@ -135,8 +130,16 @@ export class Hud {
   }
 
   update(sim: RunSim) {
-    this.hp.style.width = `${(sim.hp / sim.maxHp) * 100}%`;
     this.prog.style.width = `${sim.progress * 100}%`;
+    if (sim.squad !== this.lastSquad) {
+      const up = sim.squad > this.lastSquad;
+      this.lastSquad = sim.squad;
+      this.squad.textContent = String(sim.squad);
+      const chip = this.squad.parentElement!;
+      chip.classList.remove('up', 'down');
+      void chip.offsetWidth;
+      chip.classList.add(up ? 'up' : 'down');
+    }
     if (sim.weapon !== this.lastWeapon) {
       this.lastWeapon = sim.weapon;
       this.weapon.innerHTML = `<i>${WEAPON_ICON[sim.weapon]}</i><span>${WEAPONS[sim.weapon].name}</span>`;
@@ -144,47 +147,26 @@ export class Hud {
       void this.weapon.offsetWidth;
       this.weapon.classList.add('flash');
     }
-    const pw = (Object.keys(sim.powers) as PowerId[]).map((p) => `${p}${sim.powers[p]}`).join();
-    if (pw !== this.lastPowers) {
-      this.lastPowers = pw;
-      this.powers.innerHTML = (Object.keys(sim.powers) as PowerId[])
-        .filter((p) => sim.powers[p] > 0)
-        .map((p) => `<i class="pw" title="${POWERS[p]}">${POWER_ICON[p]}${sim.powers[p] > 1 ? '<em class="dbl"></em>' : ''}</i>`)
-        .join('');
+    const ready = sim.strikeReady && sim.strikeLeft <= 0;
+    if (ready !== this.lastReady) {
+      this.lastReady = ready;
+      this.strikeBtn.classList.toggle('ready', ready);
     }
-    const cs = sim.companions.map((c) => (c.alive ? 1 : 0)).join() + `/${sim.cagesTotal}/${sim.cagesOpened}`;
-    if (cs !== this.lastComps) {
-      this.lastComps = cs;
-      const slots = sim.companions.map((c) => `<i class="cp ${c.alive ? '' : 'lost'}">${ICON.survivor}</i>`).join('');
-      this.comps.innerHTML = slots;
-    }
-    const ready = sim.dashCooldown <= 0;
-    this.dashBtn.classList.toggle('ready', ready);
-    this.dashFill.style.height = `${(1 - sim.dashCooldown / 9) * 100}%`;
-    // obiettivo speciale del livello
+    this.strikeFill.style.height = `${Math.min(1, sim.strikeCharge / AIRSTRIKE.killsToCharge) * 100}%`;
+    // obiettivo del finale: muro da abbattere o capo
     let text = '';
     let frac = -1;
-    if (sim.escort) {
-      text = 'Blindato';
-      frac = sim.escort.hp / sim.escort.maxHp;
-    } else if (sim.thief?.alive) {
-      text = 'Ladro';
-      frac = sim.thief.hp / sim.thief.maxHp;
-    } else if (sim.medicine && sim.medicineState === 'active') {
-      text = 'Medicine';
-      frac = sim.medicine.hp / sim.medicine.maxHp;
-    } else if (sim.boss?.alive) {
+    if (sim.boss?.alive) {
       text = 'Capo dell’orda';
       frac = sim.boss.hp / sim.boss.maxHp;
-    } else if (sim.stopped && sim.gate?.alive) {
-      text = sim.hordeLeft > 0 ? 'Sfonda il blocco prima dell’orda' : 'L’orda è qui!';
-      frac = sim.hordeLeft / Math.max(1, sim.hordeTotal);
+    } else if (sim.wall?.alive && sim.wall.z - sim.playerZ < 40) {
+      text = sim.stopped ? 'Abbatti il muro! L’orda arriva' : 'Il muro';
+      frac = sim.wall.hp / sim.wall.maxHp;
     }
-    const key = text;
-    if (key !== this.lastObj) {
-      this.lastObj = key;
+    if (text !== this.lastObj) {
+      this.lastObj = text;
       this.objective.classList.toggle('show', !!text);
-      this.el.querySelector('#objtext')!.textContent = text;
+      this.objText.textContent = text;
     }
     if (frac >= 0) this.objFill.style.width = `${Math.max(0, frac) * 100}%`;
   }
@@ -221,7 +203,7 @@ export function showResult(opts: {
   onRetry: () => void;
   onMenu: () => void;
 }) {
-  const labels = ['Arrivato', 'Cassaforte aperta', 'Tutti i sopravvissuti salvi'];
+  const labels = ['Arrivato', 'Cassaforte aperta', 'Almeno metà squadra salva'];
   const rows = labels
     .map((t, i) => `<div class="srow ${opts.flags[i] ? 'on' : ''} ${opts.flags[i] && !opts.previous[i] ? 'new' : ''}" style="--d:${0.35 + i * 0.35}s"><i>${ICON.star}</i><span>${t}</span></div>`)
     .join('');
@@ -229,7 +211,7 @@ export function showResult(opts: {
     <h2>${opts.won ? 'Livello completato' : 'Sei caduto'}</h2>
     <div class="reason">${opts.reason}</div>
     ${opts.won ? `<div class="stars-big">${rows}</div>
-      <div class="reward"><i>${ICON.materials}</i><b>+${opts.reward.materials}</b><i>${ICON.food}</i><b>+${opts.reward.food}</b></div>` : '<div class="tip">Riprovare è gratis. Cambia corsia, scegli un’altra arma, usa i barili.</div>'}
+      <div class="reward"><i>${ICON.materials}</i><b>+${opts.reward.materials}</b><i>${ICON.food}</i><b>+${opts.reward.food}</b></div>` : '<div class="tip">Riprovare è gratis. Prendi prima i barili soldati, evita quelli che non riesci ad abbattere.</div>'}
     ${opts.won && opts.hasNext ? '<button class="big" id="next">Avanti</button>' : ''}
     <button class="${opts.won ? 'sec' : 'big'}" id="retry">Riprova</button>
     <button class="sec" id="menu">Livelli</button>

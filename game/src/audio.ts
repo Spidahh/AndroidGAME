@@ -77,7 +77,7 @@ class AudioManager {
     const P: Record<WeaponId, { f: number; q: number; dur: number; vol: number; thump: number }> = {
       pistol: { f: 2400, q: 0.8, dur: 0.09, vol: 0.32, thump: 140 },
       smg: { f: 3200, q: 0.9, dur: 0.05, vol: 0.2, thump: 170 },
-      shotgun: { f: 1200, q: 0.6, dur: 0.22, vol: 0.5, thump: 90 },
+      heavy: { f: 1400, q: 0.7, dur: 0.16, vol: 0.42, thump: 95 },
       rifle: { f: 1800, q: 1.2, dur: 0.28, vol: 0.45, thump: 75 },
       flame: { f: 700, q: 0.4, dur: 0.12, vol: 0.12, thump: 0 },
       grenade: { f: 600, q: 0.7, dur: 0.18, vol: 0.4, thump: 60 },

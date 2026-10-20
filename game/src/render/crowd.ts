@@ -32,9 +32,10 @@ export class Crowd {
   clips = new Map<string, ClipInfo>();
   private rest = Matrix.Identity();
   private restInv = Matrix.Identity();
-  private matrices = new Float32Array(16 * 8);
-  private settings = new Float32Array(4 * 8);
-  private capacity = 8;
+  // capacità iniziale ampia: ricreare i buffer a metà partita provoca scatti
+  private matrices = new Float32Array(16 * 160);
+  private settings = new Float32Array(4 * 160);
+  private capacity = 160;
   time = 0;
   private bound = false;
 
@@ -124,6 +125,11 @@ export class Crowd {
 
   private tmpM = new Matrix();
   private tmpW = new Matrix();
+  // oggetti temporanei riusati: niente allocazioni per istanza a ogni frame (meno raccolta della memoria)
+  private tmpS = new Vector3();
+  private tmpP = new Vector3();
+  private tmpQ = new Quaternion();
+  private lastCount = -1;
 
   /** Aggiorna tutte le istanze. Va chiamata ogni frame. */
   update(items: CrowdItem[], dt = 0) {
@@ -139,7 +145,10 @@ export class Crowd {
     for (let i = 0; i < items.length; i++) {
       const it = items[i];
       // finale = rest × (R · S · T) espresso nello spazio locale della mesh: inst = rest⁻¹... (convenzione vettore-riga)
-      Matrix.ComposeToRef(new Vector3(it.scale, it.scale, it.scale), Quaternion.FromEulerAngles(0, it.yaw, 0), new Vector3(it.x, it.y ?? 0, it.z), this.tmpW);
+      this.tmpS.set(it.scale, it.scale, it.scale);
+      this.tmpP.set(it.x, it.y ?? 0, it.z);
+      Quaternion.FromEulerAnglesToRef(0, it.yaw, 0, this.tmpQ);
+      Matrix.ComposeToRef(this.tmpS, this.tmpQ, this.tmpP, this.tmpW);
       // v·inst·rest = v·rest·W  →  inst = rest·W·rest⁻¹
       this.rest.multiplyToRef(this.tmpW, this.tmpM);
       this.tmpM.multiplyToRef(this.restInv, this.tmpM);
@@ -161,8 +170,15 @@ export class Crowd {
       } else {
         offset = (it.startedAt * 7.31) % total; // sfasamento per non far marciare tutti insieme
       }
-      this.settings.set([start, end, offset, c.fps], i * 4);
+      const o = i * 4;
+      this.settings[o] = start;
+      this.settings[o + 1] = end;
+      this.settings[o + 2] = offset;
+      this.settings[o + 3] = c.fps;
     }
+    // folla vuota e già vuota: niente da caricare sulla scheda video
+    if (!grown && items.length === 0 && this.lastCount === 0) return;
+    this.lastCount = items.length;
     for (const mesh of this.meshes) {
       if (grown) {
         mesh.thinInstanceSetBuffer('matrix', this.matrices, 16, false);

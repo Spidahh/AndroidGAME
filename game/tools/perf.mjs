@@ -1,10 +1,10 @@
 // Misura prestazioni di M1 in Chromium con viewport da telefono e CPU rallentata.
-// Uso: node tools/perf.mjs [url] [cpuThrottle] [zombie]
+// Uso: node tools/perf.mjs [url] [cpuThrottle] [livello] [qualità] — misura nel tratto più affollato del livello
 import { chromium } from '@playwright/test';
 
 const url = process.argv[2] ?? 'http://localhost:5173/';
 const throttle = Number(process.argv[3] ?? 4);
-const zombies = Number(process.argv[4] ?? 40);
+const level = Number(process.argv[4] ?? 4);
 const quality = process.argv[5] ?? 'alta';
 
 const browser = await chromium.launch({ args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist', '--enable-unsafe-swiftshader'] });
@@ -16,7 +16,7 @@ page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
 const cdp = await ctx.newCDPSession(page);
 await cdp.send('Emulation.setCPUThrottlingRate', { rate: throttle });
 const t0 = Date.now();
-await page.goto(`${url}?stress=${zombies}&q=${quality}&god=1`);
+await page.goto(`${url}?level=${level}&at=0.45&q=${quality}&god=1`);
 await page.waitForFunction(() => !!document.getElementById('weapon'), null, { timeout: 120000 });
 const loadMs = Date.now() - t0;
 await page.waitForTimeout(3000);

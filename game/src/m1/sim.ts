@@ -1,8 +1,7 @@
-// Simulazione di M1 "La Corsa". TypeScript puro: nessuna dipendenza da Babylon.
-// Spazio: corsie lungo Z (avanti), X laterale. 1 unità = 1 metro.
+// Simulazione di M1 "La Corsa" v2 (docs/M1-CORSA.md). TypeScript puro, deterministico, senza Babylon.
+// La squadra corre unita nella corsia scelta: i soldati sono vita e potenza di fuoco.
 import {
-  LANE_COUNT, LANE_W, laneX, WEAPONS, WeaponId, ZOMBIES, ZombieKind, ObjectKind, OBJECT_HP, LOOT_HP, SHOOTABLE, OBJECT_CONTACT,
-  PowerId, LootSize, LOOT_BONUS, SAFE_BONUS, HERO,
+  LANE_COUNT, LANE_W, laneX, WEAPONS, WEAPON_LADDER, WeaponId, ZOMBIES, ZombieKind, OBJECTS, ObjectKind, SQUAD, AIRSTRIKE, EXPLOSION, hpScale,
 } from './defs';
 import { LevelDef, LevelEvent } from './level';
 
@@ -19,12 +18,12 @@ export interface Zombie {
   maxHp: number;
   alive: boolean;
   deadAt: number;
-  switchAt: number; // cambio corsia annunciato (corridori, ladro)
+  switchAt: number;
   switchTo: number;
   hitAt: number;
-  burnUntil: number;
-  nextAttack: number; // sputatore, capo
-  dropFrom?: number; // caduto dal tetto: istante di atterraggio
+  nextAttack: number;
+  dropAt: number; // > tempo attuale: sta ancora cadendo dal tetto
+  dx: number; // scostamento laterale dentro la corsia
 }
 
 export interface WorldObject {
@@ -37,12 +36,8 @@ export interface WorldObject {
   maxHp: number;
   alive: boolean;
   hitAt: number;
+  troops: number;
   weapon?: WeaponId;
-  power?: PowerId;
-  size?: LootSize;
-  moving?: boolean;
-  switchAt: number;
-  switchTo: number;
   period: number;
   phase: number;
   touched: boolean;
@@ -51,69 +46,56 @@ export interface WorldObject {
 export interface Bullet {
   id: number;
   lane: number;
-  originLane: number;
   x: number;
   z: number;
   zStart: number;
   weapon: WeaponId;
-  dmgMul: number;
+  damage: number;
   pierceLeft: number;
   hitIds: Set<number>;
   alive: boolean;
-  companion: boolean;
 }
 
-export interface Companion {
+export interface Hazard {
   id: number;
-  lane: number;
-  x: number;
-  hp: number;
-  alive: boolean;
-  model: number; // quale sopravvissuto
-  cooldown: number;
-}
-
-export interface LaneHazard {
-  id: number;
-  kind: 'acid' | 'slam' | 'shadow';
+  kind: 'acid' | 'slam' | 'shadow' | 'strike';
   lane: number;
   z: number;
   len: number;
-  activeAt: number; // prima di questo istante è solo un segnale
+  activeAt: number;
   until: number;
-  hitPlayer: boolean;
+  done: boolean;
   dropKind?: ZombieKind;
 }
 
+export type LossCause = 'zombie' | 'runner' | 'dog' | 'armored' | 'giant' | 'bloater' | 'shield' | 'acid' | 'boss' | 'explosion' | 'object' | 'trap' | 'car' | 'gate';
+
 export type SimEvent =
-  | { type: 'shot'; weapon: WeaponId; lane: number; companion: boolean }
-  | { type: 'hit'; target: 'zombie' | 'object'; id: number; armored: boolean; x: number; z: number }
+  | { type: 'shot'; weapon: WeaponId; lane: number; count: number }
+  | { type: 'hit'; target: 'zombie' | 'object'; id: number; x: number; z: number; damage: number; armored: boolean }
   | { type: 'zombieDied'; id: number; kind: ZombieKind; x: number; z: number }
-  | { type: 'objectBroken'; id: number; kind: ObjectKind; x: number; z: number; opened: boolean }
+  | { type: 'objectOpened'; id: number; kind: ObjectKind; x: number; z: number }
+  | { type: 'objectLost'; id: number; kind: ObjectKind; x: number; z: number }
   | { type: 'explosion'; x: number; z: number; size: number }
-  | { type: 'playerHurt'; amount: number }
-  | { type: 'shieldBlock' }
+  | { type: 'soldiersLost'; count: number; cause: LossCause; x: number }
+  | { type: 'soldiersGained'; count: number; x: number; z: number }
   | { type: 'weapon'; weapon: WeaponId }
-  | { type: 'power'; power: PowerId }
-  | { type: 'loot'; size: LootSize | 'safe' }
-  | { type: 'companionJoined'; id: number }
-  | { type: 'companionLost'; id: number }
-  | { type: 'warn'; kind: 'acid' | 'slam' | 'shadow'; lane: number }
+  | { type: 'freeze' }
+  | { type: 'loot'; kind: 'safe' }
+  | { type: 'warn'; kind: 'acid' | 'slam' | 'shadow' | 'seeker'; lane: number }
   | { type: 'slam'; lane: number; z: number }
-  | { type: 'dash' }
+  | { type: 'airstrike'; lane: number }
+  | { type: 'airstrikeReady' }
   | { type: 'hint'; text: string }
   | { type: 'boss' }
-  | { type: 'medicine'; state: 'appear' | 'opened' | 'lost' }
-  | { type: 'escortHit' }
   | { type: 'end'; won: boolean; reason: string };
 
 export interface SimOptions {
   seed: number;
-  /** solo per prove di prestazioni: l'eroe non subisce danni */
   invulnerable?: boolean;
-  /** prova di carico senza livello: flusso continuo di zombie */
-  stressZombies?: number;
-  /** solo sviluppo: parte da questo punto del percorso (frazione 0–1) */
+  /** soldati iniziali extra (potenziamenti della città) */
+  bonusSoldiers?: number;
+  /** solo sviluppo/test: parte da una frazione del percorso */
   startAt?: number;
 }
 
@@ -128,8 +110,8 @@ export function rng(seed: number) {
   };
 }
 
-const SPAWN_AHEAD = 72;
-const ENGAGE = 45; // gli zombie si muovono solo entro questa distanza
+const SPAWN_AHEAD = 75;
+const ACTIVE = 55; // gli zombie si muovono solo entro questa distanza
 
 export class RunSim {
   time = 0;
@@ -137,44 +119,34 @@ export class RunSim {
   playerLane = 1;
   playerX = laneX(1);
   speed: number;
-  hp = HERO.hp;
-  maxHp = HERO.hp;
+  squad: number;
+  peakSquad: number;
   weapon: WeaponId = 'pistol';
-  powers: Record<PowerId, number> = { rapid: 0, damage: 0, shield: 0, pierce: 0 };
-  companions: Companion[] = [];
-  dashLeft = 0;
-  dashCooldown = 0;
   zombies: Zombie[] = [];
   objects: WorldObject[] = [];
   bullets: Bullet[] = [];
-  hazards: LaneHazard[] = [];
+  hazards: Hazard[] = [];
   events: SimEvent[] = [];
   kills = 0;
-  // stato del livello
+  strikeCharge = 0;
+  strikeLeft = 0;
+  strikeLane = 1;
+  freezeUntil = 0;
   status: 'running' | 'won' | 'lost' = 'running';
   endReason = '';
-  lootBonus = 0;
   safeOpened = false;
-  cagesTotal = 0;
-  cagesOpened = 0;
-  companionsLost = 0;
-  stopped = false; // fermi davanti al portone finale
-  hordeLeft = 0; // secondi prima che l'orda alle spalle arrivi (portone)
-  hordeTotal = 0;
-  escort?: { lane: number; z: number; hp: number; maxHp: number };
+  stopped = false;
   boss?: Zombie;
-  thief?: Zombie;
-  medicine?: WorldObject;
-  medicineState: 'waiting' | 'active' | 'opened' | 'lost' = 'waiting';
-  gate?: WorldObject;
+  wall?: WorldObject;
+  /** statistiche per i test e il bilanciamento */
+  stats = { lost: {} as Partial<Record<LossCause, number>>, gained: 0, opened: 0, missed: 0, laneChanges: 0 };
 
   private nextId = 1;
   private fireCooldown = 0;
   private rand: () => number;
   private pending: LevelEvent[];
-  private medicineUntil = 0;
-  private hordeTick = 0;
-  private stressSpawnedTo = 10;
+  private nextWave = 0;
+  private readonly hpMul: number;
 
   get over() {
     return this.status !== 'running';
@@ -182,66 +154,79 @@ export class RunSim {
   get progress() {
     return Math.min(1, this.playerZ / this.level.length);
   }
-  /** stelle: [arrivato, cassaforte aperta, tutte le gabbie aperte e nessun compagno perso] */
+  get lane() {
+    return Math.round(this.playerX / LANE_W + (LANE_COUNT - 1) / 2);
+  }
+  get weaponTier() {
+    return Math.max(0, WEAPON_LADDER.indexOf(this.weapon));
+  }
+  /** potenza di fuoco attuale (danno al secondo della squadra) */
+  get firepower() {
+    return this.squad * WEAPONS[this.weapon].dps;
+  }
+  /** [arrivati, cassaforte aperta, arrivati con almeno metà dei soldati massimi] */
   get starFlags(): [boolean, boolean, boolean] {
     const won = this.status === 'won';
-    return [won, won && this.safeOpened, won && this.cagesOpened >= this.cagesTotal && this.companionsLost === 0];
+    return [won, won && this.safeOpened, won && this.squad * 2 >= this.peakSquad];
   }
   get stars() {
     return this.starFlags.filter(Boolean).length;
   }
+  get strikeReady() {
+    return this.strikeCharge >= AIRSTRIKE.killsToCharge;
+  }
 
   constructor(public level: LevelDef, public opts: SimOptions) {
     this.rand = rng(opts.seed);
-    this.speed = level.speed[0];
+    this.speed = level.speed;
+    this.hpMul = hpScale(level.id);
+    this.squad = this.peakSquad = SQUAD.start + (opts.bonusSoldiers ?? 0);
     this.pending = [...level.events].sort((a, b) => a.z - b.z);
     if (opts.startAt) {
       this.playerZ = level.length * opts.startAt;
-      this.pending = this.pending.filter((e) => e.z > this.playerZ + 10);
-    }
-    this.cagesTotal = level.events.filter((e) => e.do === 'object' && e.kind === 'cage').length;
-    if (level.escort) this.escort = { lane: 1, z: 7, hp: level.escort.hp, maxHp: level.escort.hp };
-    if (level.thief) {
-      this.thief = this.makeZombie('thief', 1, level.thief.lead);
-      this.thief.hp = this.thief.maxHp = level.thief.hp;
-      this.zombies.push(this.thief);
+      this.pending = this.pending.filter((e) => e.z > this.playerZ + 12);
+      const exp = [...level.expected].reverse().find((p) => p.z <= this.playerZ) ?? level.expected[0];
+      this.squad = this.peakSquad = Math.max(3, Math.round(exp.squad));
+      this.weapon = exp.weapon;
     }
   }
 
   // ---------- comandi ----------
   moveLane(dir: -1 | 1) {
     if (this.over) return;
-    this.playerLane = Math.max(0, Math.min(LANE_COUNT - 1, this.playerLane + dir));
+    const to = Math.max(0, Math.min(LANE_COUNT - 1, this.playerLane + dir));
+    if (to !== this.playerLane) this.stats.laneChanges++;
+    this.playerLane = to;
   }
-  dash() {
-    if (this.over || this.dashCooldown > 0) return false;
-    this.dashLeft = HERO.dashTime;
-    this.dashCooldown = HERO.dashCooldown;
-    this.events.push({ type: 'dash' });
+  goLane(lane: number) {
+    while (this.playerLane !== lane && !this.over) this.moveLane(lane > this.playerLane ? 1 : -1);
+  }
+  airstrike() {
+    if (this.over || !this.strikeReady) return false;
+    this.strikeCharge = 0;
+    this.strikeLeft = AIRSTRIKE.duration;
+    this.strikeLane = this.lane;
+    this.hazards.push({ id: this.nextId++, kind: 'strike', lane: this.lane, z: this.playerZ + 4, len: 30, activeAt: this.time, until: this.time + AIRSTRIKE.duration, done: false });
+    this.events.push({ type: 'airstrike', lane: this.lane });
     return true;
   }
 
-  // ---------- passo di simulazione ----------
+  // ---------- passo ----------
   step(dt: number) {
     if (this.over) return;
     this.time += dt;
-    this.dashLeft = Math.max(0, this.dashLeft - dt);
-    this.dashCooldown = Math.max(0, this.dashCooldown - dt);
-
-    const [v0, v1] = this.level.speed;
-    const target = this.stopped ? 0 : v0 + (v1 - v0) * this.progress;
-    this.speed += (target - this.speed) * Math.min(1, dt * (this.stopped ? 4 : 1));
+    const target = this.stopped ? 0 : this.level.speed;
+    this.speed += (target - this.speed) * Math.min(1, dt * (this.stopped ? 5 : 2));
     this.playerZ += this.speed * dt;
     const tx = laneX(this.playerLane);
     this.playerX += (tx - this.playerX) * Math.min(1, dt / 0.05);
     if (Math.abs(tx - this.playerX) < 0.01) this.playerX = tx;
 
-    if (this.opts.stressZombies) this.stressSpawn();
-    else this.spawnFromLevel();
-    this.updateObjectives(dt);
-    this.placeCompanions(dt);
+    this.spawn();
+    this.finale(dt);
     this.fire(dt);
     this.updateBullets(dt);
+    this.updateStrike(dt);
     this.updateZombies(dt);
     this.updateHazards();
     this.collide();
@@ -249,202 +234,96 @@ export class RunSim {
     this.cleanup();
   }
 
-  private currentLane() {
-    return Math.round(this.playerX / LANE_W + (LANE_COUNT - 1) / 2);
-  }
-
-  // ---------- generazione dal livello ----------
-  private spawnFromLevel() {
+  private spawn() {
     while (this.pending.length && this.pending[0].z < this.playerZ + SPAWN_AHEAD) {
       const e = this.pending.shift()!;
-      if (e.do === 'zombie') this.zombies.push(this.makeZombie(e.kind, e.lane, e.z));
-      else if (e.do === 'object') this.objects.push(this.makeObject(e.kind, e.lane, e.z, e));
-      else if (e.do === 'fence') {
-        const o = this.makeObject('fence', e.lane, e.z, {});
-        o.period = e.period;
-        o.phase = e.phase;
-        this.objects.push(o);
-      } else if (e.do === 'drop') {
-        // ombra a terra: lo zombie atterra quando l'eroe si avvicina
-        this.hazards.push({ id: this.nextId++, kind: 'shadow', lane: e.lane, z: e.z, len: 1.2, activeAt: Infinity, until: Infinity, hitPlayer: false, dropKind: e.kind });
-      } else if (e.do === 'hint') this.events.push({ type: 'hint', text: e.text });
+      if (e.do === 'zombie') this.zombies.push(this.makeZombie(e.kind, e.lane, e.z, e.dx));
+      else if (e.do === 'object') this.objects.push(this.makeObject(e));
+      else if (e.do === 'drop') this.hazards.push({ id: this.nextId++, kind: 'shadow', lane: e.lane, z: e.z, len: 1.2, activeAt: Infinity, until: Infinity, done: false, dropKind: e.kind });
+      else if (e.do === 'hint') this.events.push({ type: 'hint', text: e.text });
     }
   }
 
-  private stressSpawn() {
-    const horizon = this.playerZ + 75;
-    while (this.stressSpawnedTo < horizon) {
-      const alive = this.zombies.filter((q) => q.alive && q.z > this.playerZ).length;
-      const deficit = (this.opts.stressZombies ?? 0) - alive;
-      const n = deficit > 0 ? Math.min(6, Math.ceil(deficit / 6)) : 0;
-      for (let i = 0; i < n; i++) {
-        const r = this.rand();
-        const kind: ZombieKind = r < 0.5 ? 'walker' : r < 0.75 ? 'runner' : r < 0.85 ? 'shield' : r < 0.93 ? 'bloater' : 'brute';
-        this.zombies.push(this.makeZombie(kind, Math.floor(this.rand() * LANE_COUNT), this.stressSpawnedTo + this.rand() * 4));
-      }
-      if (Math.floor(this.stressSpawnedTo) % 24 < 4) this.objects.push(this.makeObject('chest', Math.floor(this.rand() * 3), this.stressSpawnedTo + 2, { weapon: (['smg', 'shotgun', 'rifle', 'flame', 'grenade'] as WeaponId[])[Math.floor(this.rand() * 5)] }));
-      this.stressSpawnedTo += 4;
-    }
-  }
-
-  private makeZombie(kind: ZombieKind, lane: number, z: number): Zombie {
+  makeZombie(kind: ZombieKind, lane: number, z: number, dx?: number): Zombie {
     const d = ZOMBIES[kind];
-    return { id: this.nextId++, kind, lane, x: laneX(lane), z, hp: d.hp, maxHp: d.hp, alive: true, deadAt: 0, switchAt: -1, switchTo: lane, hitAt: -1, burnUntil: 0, nextAttack: 0 };
+    const hp = kind === 'boss' ? d.hp : Math.round(d.hp * this.hpMul);
+    const off = dx ?? (this.rand() - 0.5) * 1.6;
+    return { id: this.nextId++, kind, lane, x: kind === 'boss' ? 0 : laneX(lane) + off, z, hp, maxHp: hp, alive: true, deadAt: 0, switchAt: -1, switchTo: lane, hitAt: -1, nextAttack: 0, dropAt: 0, dx: off };
   }
 
-  private makeObject(kind: ObjectKind, lane: number, z: number, e: Partial<Extract<LevelEvent, { do: 'object' }>>): WorldObject {
-    const hp = e.hp ?? (kind === 'loot' ? LOOT_HP[e.size ?? 'M'] : OBJECT_HP[kind]);
-    return { id: this.nextId++, kind, lane, x: laneX(lane), z, hp, maxHp: hp, alive: true, hitAt: -1, weapon: e.weapon, power: e.power, size: e.size, moving: e.moving, switchAt: -1, switchTo: lane, period: 0, phase: 0, touched: false };
+  private makeObject(e: Extract<LevelEvent, { do: 'object' }>): WorldObject {
+    const hp = e.hp ?? (OBJECTS[e.kind].shootable ? 100 : Infinity);
+    return { id: this.nextId++, kind: e.kind, lane: e.lane, x: e.kind === 'wall' ? 0 : laneX(e.lane), z: e.z, hp, maxHp: hp, alive: true, hitAt: -1, troops: e.troops ?? 0, weapon: e.weapon, period: e.period ?? 0, phase: e.phase ?? 0, touched: false };
   }
 
-  // ---------- obiettivi dei tipi di livello ----------
-  private updateObjectives(dt: number) {
-    const L = this.level;
-    // recupero: il carrello delle medicine
-    if (L.medicine && this.medicineState === 'waiting' && this.playerZ + 18 >= L.medicine.z) {
-      const m = this.makeObject('medicine', 1, this.playerZ + 18, { hp: L.medicine.hp, moving: true });
-      this.objects.push(m);
-      this.medicine = m;
-      this.medicineState = 'active';
-      this.medicineUntil = this.time + L.medicine.seconds;
-      this.events.push({ type: 'medicine', state: 'appear' });
-    }
-    if (this.medicine && this.medicineState === 'active') {
-      const m = this.medicine;
-      if (!m.alive) {
-        this.medicineState = 'opened';
-        this.events.push({ type: 'medicine', state: 'opened' });
-      } else if (this.time > this.medicineUntil) {
-        m.z += 25 * dt; // il carrello scappa
-        if (m.z > this.playerZ + 40) {
-          m.alive = false;
-          this.medicineState = 'lost';
-          this.events.push({ type: 'medicine', state: 'lost' });
-        }
-      } else {
-        m.z = this.playerZ + 14;
-        this.laneWander(m, 3.6);
+  /** la sega/recinzione è attiva in questo momento? */
+  trapOn(o: WorldObject, t = this.time) {
+    return o.period > 0 ? (t + o.phase) % o.period < o.period * 0.5 : true;
+  }
+
+  // ---------- finale: muro con ondate oppure capo ----------
+  private finale(dt: number) {
+    const F = this.level.finale;
+    if (F.kind === 'wall') {
+      if (!this.wall && this.playerZ >= this.level.length - 60) {
+        this.wall = this.makeObject({ z: this.level.length, do: 'object', kind: 'wall', lane: 1, hp: F.hp });
+        this.objects.push(this.wall);
       }
-    }
-    // scorta: il blindato corre davanti nella corsia centrale
-    if (this.escort) this.escort.z = this.playerZ + 7;
-    // inseguimento: il ladro resta davanti e cambia corsia
-    if (this.thief?.alive) {
-      // il ladro a tratti scatta e si allontana fuori tiro: va inseguito per tutta la strada
-      const sprint = Math.max(0, Math.sin(this.time * 0.45)) * 14;
-      const lead = (L.thief?.lead ?? 22) * (1 - 0.4 * this.progress) + sprint;
-      this.thief.z += (this.playerZ + Math.max(9, lead) - this.thief.z) * Math.min(1, dt * 1.5);
-      this.laneWander(this.thief, 2.2);
-    }
-    // finale con il capo
-    if (L.finale.kind === 'boss' && !this.boss && this.playerZ >= L.length - 40) {
-      this.boss = this.makeZombie('boss', 1, this.playerZ + 26);
-      this.boss.hp = this.boss.maxHp = L.finale.hp;
-      this.boss.nextAttack = this.time + 2.5;
-      this.zombies.push(this.boss);
-      this.events.push({ type: 'boss' });
-    }
-    if (this.boss?.alive) this.updateBoss();
-    // finale con il portone
-    if (L.finale.kind === 'gate' && !this.gate && this.playerZ >= L.length - 60) {
-      const g = this.makeObject('gate', 1, L.length, { hp: L.finale.hp });
-      this.gate = g;
-      this.objects.push(g);
-    }
-    if (this.gate?.alive && L.finale.kind === 'gate' && this.playerZ >= this.gate.z - 7) {
-      if (!this.stopped) {
+      if (this.wall?.alive && this.playerZ >= this.wall.z - 11) {
         this.stopped = true;
-        this.hordeTotal = this.hordeLeft = L.finale.hordeSeconds;
+        this.playerZ = Math.min(this.playerZ, this.wall.z - 10.5);
+        if (this.time >= this.nextWave) {
+          this.nextWave = this.time + F.waveEvery;
+          for (let i = 0; i < F.waveSize; i++) {
+            const kind: ZombieKind = i % 6 === 5 ? 'runner' : 'walker';
+            this.zombies.push(this.makeZombie(kind, i % LANE_COUNT, this.wall.z - 1.5 - (i / F.waveSize) * 3));
+          }
+        }
       }
-      this.playerZ = Math.min(this.playerZ, this.gate.z - 6.5);
-      this.hordeLeft = Math.max(0, this.hordeLeft - dt);
-      if (this.hordeLeft <= 0 && this.time >= this.hordeTick) {
-        this.hordeTick = this.time + 1.5;
-        this.hurt(18, 'L’orda ti ha raggiunto');
+      if (this.wall && !this.wall.alive) this.stopped = false;
+    } else {
+      if (!this.boss && this.playerZ >= this.level.length - 40) {
+        this.boss = this.makeZombie('boss', 1, this.playerZ + 30);
+        this.boss.hp = this.boss.maxHp = F.hp;
+        this.boss.nextAttack = this.time + 2.5;
+        this.zombies.push(this.boss);
+        this.events.push({ type: 'boss' });
       }
-    }
-    if (this.gate && !this.gate.alive) this.stopped = false;
-  }
-
-  /** cambio di corsia annunciato, per oggetti e zombie che si spostano */
-  private laneWander(e: { lane: number; switchAt: number; switchTo: number }, every: number) {
-    if (e.switchAt < 0) {
-      if (this.rand() < 1 / (every * 60)) {
-        let to = e.lane + (this.rand() < 0.5 ? -1 : 1);
-        if (to < 0 || to >= LANE_COUNT) to = e.lane + (e.lane === 0 ? 1 : -1);
-        e.switchTo = to;
-        e.switchAt = this.time + 0.6;
-      }
-    } else if (this.time >= e.switchAt) {
-      e.lane = e.switchTo;
-      e.switchAt = -1;
-    }
-  }
-
-  private updateBoss() {
-    const b = this.boss!;
-    b.z = Math.max(b.z - 0.5 * (1 / 60), this.playerZ + 15);
-    if (this.time >= b.nextAttack) {
-      b.nextAttack = this.time + Math.max(2.2, 3.4 - (1 - b.hp / b.maxHp) * 1.2);
-      if (this.rand() < 0.65) {
-        // colpo a terra su una corsia, annunciato
-        const lane = this.rand() < 0.6 ? this.currentLane() : Math.floor(this.rand() * LANE_COUNT);
-        this.hazards.push({ id: this.nextId++, kind: 'slam', lane, z: this.playerZ, len: 6, activeAt: this.time + 1.1, until: this.time + 1.35, hitPlayer: false });
-        this.events.push({ type: 'warn', kind: 'slam', lane });
-      } else {
-        // richiama due zombie
-        for (let i = 0; i < 2; i++) this.zombies.push(this.makeZombie(this.rand() < 0.5 ? 'walker' : 'runner', Math.floor(this.rand() * LANE_COUNT), b.z - 2 - i * 2));
+      const b = this.boss;
+      if (b?.alive) {
+        b.z = Math.max(b.z - 0.5 * dt, this.playerZ + 17);
+        if (this.time >= b.nextAttack) {
+          const rage = 1 - b.hp / b.maxHp;
+          b.nextAttack = this.time + Math.max(1.6, 3 - rage * 1.3);
+          if (this.rand() < 0.5) {
+            // colpo a terra annunciato sulla corsia (come i colpi da schivare dei boss di Last War)
+            const lane = this.rand() < 0.7 ? this.lane : Math.floor(this.rand() * LANE_COUNT);
+            this.hazards.push({ id: this.nextId++, kind: 'slam', lane, z: this.playerZ, len: 14, activeAt: this.time + 1.2, until: this.time + 1.5, done: false });
+            this.events.push({ type: 'warn', kind: 'slam', lane });
+          } else {
+            const n = 8 + Math.floor(rage * 12);
+            for (let i = 0; i < n; i++) this.zombies.push(this.makeZombie(i % 5 === 4 ? 'dog' : 'walker', i % LANE_COUNT, b.z - 2 - i * 0.5));
+          }
+        }
       }
     }
   }
 
-  // ---------- compagni ----------
-  private placeCompanions(dt: number) {
-    const alive = this.companions.filter((c) => c.alive);
-    const lane = this.currentLane();
-    const free = [0, 1, 2].filter((l) => l !== lane).sort((a, b) => Math.abs(a - lane) - Math.abs(b - lane));
-    alive.forEach((c, i) => {
-      c.lane = free[i] ?? c.lane;
-      c.x += (laneX(c.lane) - c.x) * Math.min(1, dt / 0.08);
-    });
-  }
-
-  private addCompanion() {
-    if (this.companions.filter((c) => c.alive).length >= 2) return;
-    const id = this.nextId++;
-    this.companions.push({ id, lane: this.playerLane, x: this.playerX, hp: HERO.companionHp, alive: true, model: this.companions.length % 2, cooldown: 0.3 });
-    this.events.push({ type: 'companionJoined', id });
-  }
-
-  // ---------- fuoco ----------
+  // ---------- fuoco della squadra ----------
   private fire(dt: number) {
     const w = WEAPONS[this.weapon];
-    const rate = w.rate * (1 + 0.35 * this.powers.rapid);
-    const dmgMul = 1 + 0.3 * this.powers.damage;
     this.fireCooldown -= dt;
-    let guard = 0;
-    while (this.fireCooldown <= 0 && guard++ < 4) {
-      this.fireCooldown += 1 / rate;
-      this.spawnBullets(this.currentLane(), w.id, dmgMul, false);
+    if (this.fireCooldown > 0) return;
+    this.fireCooldown += 1 / w.rate;
+    // tutti i soldati sparano; si generano al massimo 8 proiettili che portano il danno complessivo
+    const drawn = Math.min(8, Math.max(1, this.squad));
+    const dmg = (w.dps * this.squad) / w.rate / drawn;
+    const lane = this.lane;
+    for (let i = 0; i < drawn; i++) {
+      const spread = drawn > 1 ? (i / (drawn - 1) - 0.5) * 1.5 : 0;
+      this.bullets.push({ id: this.nextId++, lane, x: laneX(lane) + spread, z: this.playerZ + 1.2 - (i % 3) * 0.3, zStart: this.playerZ + 1.2, weapon: w.id, damage: dmg, pierceLeft: w.pierce, hitIds: new Set(), alive: true });
     }
-    for (const c of this.companions) {
-      if (!c.alive) continue;
-      c.cooldown -= dt;
-      if (c.cooldown <= 0) {
-        c.cooldown += 2 / rate;
-        this.spawnBullets(c.lane, w.id, dmgMul * HERO.companionDamage, true);
-      }
-    }
-  }
-
-  private spawnBullets(lane: number, wid: WeaponId, dmgMul: number, companion: boolean) {
-    const w = WEAPONS[wid];
-    for (const off of w.lanes) {
-      const l = lane + off;
-      if (l < 0 || l >= LANE_COUNT) continue;
-      this.bullets.push({ id: this.nextId++, lane: l, originLane: lane, x: laneX(l), z: this.playerZ + 0.8, zStart: this.playerZ + 0.8, weapon: wid, dmgMul, pierceLeft: w.pierce + this.powers.pierce, hitIds: new Set(), alive: true, companion });
-    }
-    this.events.push({ type: 'shot', weapon: wid, lane, companion });
+    this.events.push({ type: 'shot', weapon: w.id, lane, count: drawn });
   }
 
   private updateBullets(dt: number) {
@@ -453,195 +332,223 @@ export class RunSim {
       const w = WEAPONS[b.weapon];
       const z0 = b.z;
       b.z += w.speed * dt;
-      const expired = b.z - b.zStart > w.range;
-      type Hit = { z: number; id: number; apply: () => void };
-      const hits: Hit[] = [];
-      for (const zb of this.zombies) {
-        if (!zb.alive || (zb.lane !== b.lane && zb.kind !== 'boss') || b.hitIds.has(zb.id) || zb.dropFrom) continue;
-        const r = ZOMBIES[zb.kind].radius;
-        if (zb.z >= z0 - r && zb.z <= b.z + r) hits.push({ z: zb.z, id: zb.id, apply: () => this.bulletOnZombie(b, w.id, zb) });
-      }
-      for (const o of this.objects) {
-        if (!o.alive || !SHOOTABLE[o.kind] || b.hitIds.has(o.id)) continue;
-        const sameLane = o.kind === 'gate' || o.lane === b.lane;
-        if (sameLane && o.z >= z0 - 0.7 && o.z <= b.z + 0.7) hits.push({ z: o.z, id: o.id, apply: () => this.damageObject(o, w.damage * b.dmgMul) });
-      }
-      hits.sort((a, c) => a.z - c.z);
-      for (const h of hits) {
-        h.apply();
-        b.hitIds.add(h.id);
+      // bersagli lungo il tragitto, in ordine: gli zombie davanti fanno da scudo agli oggetti (§1.3b).
+      // Il danno che avanza dopo un'uccisione passa al bersaglio successivo: nessuna potenza sprecata.
+      for (let guard = 0; guard < 24 && b.alive; guard++) {
+        let bestZ = Infinity;
+        let target: { kind: 'z'; z: Zombie } | { kind: 'o'; o: WorldObject } | null = null;
+        for (const zb of this.zombies) {
+          if (!zb.alive || zb.dropAt > this.time || b.hitIds.has(zb.id)) continue;
+          if (zb.lane !== b.lane && zb.kind !== 'boss') continue;
+          const r = ZOMBIES[zb.kind].radius;
+          if (zb.z >= z0 - r && zb.z <= b.z + r && zb.z < bestZ) {
+            bestZ = zb.z;
+            target = { kind: 'z', z: zb };
+          }
+        }
+        for (const o of this.objects) {
+          if (!o.alive || !OBJECTS[o.kind].shootable || b.hitIds.has(o.id)) continue;
+          if ((o.kind === 'wall' || o.lane === b.lane) && o.z >= z0 - 0.8 && o.z <= b.z + 0.8 && o.z < bestZ) {
+            bestZ = o.z;
+            target = { kind: 'o', o };
+          }
+        }
+        if (!target) break;
         if (w.blast > 0) {
-          this.explode(b.lane, h.z, w.blast, w.damage * b.dmgMul, w.damage * b.dmgMul, 0, 0.8);
+          if (target.kind === 'z') this.hitZombie(target.z, b, w.id);
+          else this.damageObject(target.o, b.damage);
+          this.explode(b.lane, bestZ, w.blast, b.damage * 0.5, false);
           b.alive = false;
           break;
         }
-        if (b.pierceLeft-- <= 0) {
-          b.alive = false;
-          break;
+        if (target.kind === 'z') {
+          const zb = target.z;
+          b.hitIds.add(zb.id);
+          const before = zb.hp;
+          const shield = zb.kind === 'shield' && !w.armorPiercing ? 0.2 : 1;
+          const used = Math.min(b.damage, before / shield);
+          this.damageZombie(zb, used * shield, shield < 1);
+          if (b.pierceLeft > 0) b.pierceLeft--; // attraversa a piena potenza
+          else b.damage -= used; // il resto prosegue
+        } else {
+          const o = target.o;
+          b.hitIds.add(o.id);
+          const used = Math.min(b.damage, o.hp);
+          this.damageObject(o, used);
+          b.damage -= used;
         }
+        if (b.damage <= 0.5) b.alive = false;
       }
-      if (b.alive && expired) {
+      if (b.alive && b.z - b.zStart > w.range) {
         b.alive = false;
-        if (w.blast > 0) this.explode(b.lane, b.z, w.blast, w.damage * b.dmgMul, w.damage * b.dmgMul, 0, 0.8);
+        if (w.blast > 0) this.explode(b.lane, b.z, w.blast, b.damage, false);
       }
     }
   }
 
-  private bulletOnZombie(b: Bullet, wid: WeaponId, z: Zombie) {
-    const w = WEAPONS[wid];
-    let dmg = w.damage * b.dmgMul;
+  private hitZombie(z: Zombie, b: Bullet, wid: WeaponId) {
+    let dmg = b.damage;
     let armored = false;
-    // gli Scudati incassano i colpi frontali, non quelli di lato, del fuoco o delle esplosioni
-    if (z.kind === 'shield' && !w.armorPiercing && b.lane === b.originLane) {
-      dmg *= 0.2;
+    if (z.kind === 'shield' && !WEAPONS[wid].armorPiercing) {
+      dmg *= 0.2; // la corazza frontale ferma i colpi normali (serve fuoco, granate, esplosioni)
       armored = true;
     }
-    if (w.burn > 0) z.burnUntil = this.time + 3;
     this.damageZombie(z, dmg, armored);
   }
 
-  private damageZombie(z: Zombie, dmg: number, armored = false) {
+  damageZombie(z: Zombie, dmg: number, armored = false) {
     if (!z.alive) return;
     z.hp -= dmg;
     z.hitAt = this.time;
-    this.events.push({ type: 'hit', target: 'zombie', id: z.id, armored, x: z.x, z: z.z });
+    this.events.push({ type: 'hit', target: 'zombie', id: z.id, x: z.x, z: z.z, damage: dmg, armored });
     if (z.hp <= 0) this.killZombie(z);
   }
 
-  private killZombie(z: Zombie) {
+  private killZombie(z: Zombie, byContact = false) {
     if (!z.alive) return;
     z.alive = false;
     z.deadAt = this.time;
-    this.kills++;
+    if (!byContact) {
+      this.kills++;
+      const was = this.strikeReady;
+      this.strikeCharge = Math.min(AIRSTRIKE.killsToCharge, this.strikeCharge + 1);
+      if (!was && this.strikeReady) this.events.push({ type: 'airstrikeReady' });
+    }
     this.events.push({ type: 'zombieDied', id: z.id, kind: z.kind, x: z.x, z: z.z });
-    if (z.kind === 'bloater') this.explode(z.lane, z.z, 3, 60, 40, 25, 1);
+    if (z.kind === 'bloater') this.explode(z.lane, z.z, EXPLOSION.bloaterRadius, EXPLOSION.bloaterDamage, true);
   }
 
   private damageObject(o: WorldObject, dmg: number) {
-    if (!o.alive || !SHOOTABLE[o.kind]) return;
+    if (!o.alive) return;
     o.hp -= dmg;
     o.hitAt = this.time;
-    this.events.push({ type: 'hit', target: 'object', id: o.id, armored: false, x: o.x, z: o.z });
+    this.events.push({ type: 'hit', target: 'object', id: o.id, x: o.x, z: o.z, damage: dmg, armored: false });
     if (o.hp <= 0) this.openObject(o);
   }
 
   private openObject(o: WorldObject) {
+    if (!o.alive) return;
     o.alive = false;
-    this.events.push({ type: 'objectBroken', id: o.id, kind: o.kind, x: o.x, z: o.z, opened: true });
+    this.stats.opened++;
+    this.events.push({ type: 'objectOpened', id: o.id, kind: o.kind, x: o.x, z: o.z });
     switch (o.kind) {
-      case 'barrel':
-        this.explode(o.lane, o.z, 3.2, 90, 140, 25, 1);
+      case 'troops':
+      case 'gate':
+        this.gain(o.troops, o.x, o.z);
         break;
-      case 'chest':
-        if (o.weapon) {
-          this.weapon = o.weapon;
-          this.events.push({ type: 'weapon', weapon: o.weapon });
-        }
+      case 'weapon': {
+        const w = o.weapon ?? WEAPON_LADDER[Math.min(WEAPON_LADDER.length - 1, this.weaponTier + 1)];
+        // un barile arma non peggiora mai: se è già superata, aggiunge soldati
+        const better = w === 'flame' || w === 'grenade' ? true : WEAPON_LADDER.indexOf(w) > this.weaponTier;
+        if (better) {
+          this.weapon = w;
+          this.events.push({ type: 'weapon', weapon: w });
+        } else this.gain(3, o.x, o.z);
         break;
-      case 'power':
-        if (o.power) {
-          this.powers[o.power] = Math.min(2, this.powers[o.power] + 1);
-          this.events.push({ type: 'power', power: o.power });
-        }
+      }
+      case 'freeze':
+        this.freezeUntil = this.time + 5;
+        this.events.push({ type: 'freeze' });
         break;
-      case 'cage':
-        this.cagesOpened++;
-        this.addCompanion();
-        break;
-      case 'loot':
-        this.lootBonus += LOOT_BONUS[o.size ?? 'M'];
-        this.events.push({ type: 'loot', size: o.size ?? 'M' });
+      case 'explosive':
+        this.explode(o.lane, o.z, EXPLOSION.explosiveRadius, EXPLOSION.explosiveDamage, true);
         break;
       case 'safe':
         this.safeOpened = true;
-        this.lootBonus += SAFE_BONUS;
-        this.events.push({ type: 'loot', size: 'safe' });
+        this.events.push({ type: 'loot', kind: 'safe' });
         break;
       default:
         break;
     }
   }
 
-  /** esplosione: colpisce la propria corsia e quelle vicine entro 'radius' metri */
-  private explode(lane: number, z: number, radius: number, dmgZ: number, dmgO: number, dmgPlayer: number, size: number) {
-    this.events.push({ type: 'explosion', x: laneX(lane), z, size });
+  private gain(n: number, x: number, z: number) {
+    const add = Math.min(SQUAD.max - this.squad, n);
+    if (add <= 0) return;
+    this.squad += add;
+    this.peakSquad = Math.max(this.peakSquad, this.squad);
+    this.stats.gained += add;
+    this.events.push({ type: 'soldiersGained', count: add, x, z });
+  }
+
+  private explode(lane: number, z: number, radius: number, dmg: number, hurtsSquad: boolean) {
+    this.events.push({ type: 'explosion', x: laneX(lane), z, size: radius / 3 });
     const near = (l: number, zz: number) => Math.abs(l - lane) <= 1 && Math.abs(zz - z) < radius;
-    for (const zb of this.zombies) if (zb.alive && !zb.dropFrom && near(zb.lane, zb.z)) this.damageZombie(zb, zb.kind === 'boss' ? dmgZ * 0.5 : dmgZ);
-    for (const o of this.objects) if (o.alive && SHOOTABLE[o.kind] && o.kind !== 'barrel' && (near(o.lane, o.z) || (o.kind === 'gate' && Math.abs(o.z - z) < radius))) this.damageObject(o, dmgO);
-    // catena: altri barili vicini
-    for (const o of this.objects) if (o.alive && o.kind === 'barrel' && near(o.lane, o.z)) this.openObject(o);
-    if (dmgPlayer > 0) {
-      if (near(this.currentLane(), this.playerZ)) this.hurt(dmgPlayer, 'Esplosione');
-      for (const c of this.companions) if (c.alive && near(c.lane, this.playerZ)) this.hurtCompanion(c, dmgPlayer);
-    }
+    for (const zb of this.zombies) if (zb.alive && zb.dropAt <= this.time && (near(zb.lane, zb.z) || (zb.kind === 'boss' && Math.abs(zb.z - z) < radius + 2))) this.damageZombie(zb, zb.kind === 'boss' ? dmg * 0.5 : dmg);
+    for (const o of this.objects) if (o.alive && OBJECTS[o.kind].shootable && o.kind !== 'explosive' && (near(o.lane, o.z) || (o.kind === 'wall' && Math.abs(o.z - z) < radius + 1))) this.damageObject(o, dmg);
+    for (const o of this.objects) if (o.alive && o.kind === 'explosive' && near(o.lane, o.z)) this.openObject(o);
+    if (hurtsSquad && Math.abs(this.lane - lane) <= 1 && Math.abs(this.playerZ - z) < radius) this.lose(EXPLOSION.squadLoss, 'explosion', laneX(this.lane));
+  }
+
+  // ---------- attacco aereo ----------
+  private updateStrike(dt: number) {
+    if (this.strikeLeft <= 0) return;
+    this.strikeLeft -= dt;
+    for (const z of this.zombies)
+      if (z.alive && z.kind !== 'boss' && z.lane === this.strikeLane && z.z > this.playerZ + 2 && z.z < this.playerZ + 32) this.damageZombie(z, AIRSTRIKE.dps * dt);
+    if (this.boss?.alive && this.boss.z < this.playerZ + 34) this.damageZombie(this.boss, AIRSTRIKE.dps * 0.5 * dt);
   }
 
   // ---------- zombie ----------
   private updateZombies(dt: number) {
+    const lane = this.lane;
+    const slow = this.time < this.freezeUntil ? 0.5 : 1;
     for (const z of this.zombies) {
-      if (!z.alive) continue;
-      if (z.dropFrom) {
-        if (this.time >= z.dropFrom) z.dropFrom = undefined;
+      if (!z.alive || z.kind === 'boss' || z.dropAt > this.time) continue;
+      const d = ZOMBIES[z.kind];
+      const dist = z.z - this.playerZ;
+      if (z.kind === 'spitter') {
+        // resta in fondo alla strada e colpisce una corsia, con il segnale a terra
+        if (dist < 20) z.z = this.playerZ + 20;
+        if (dist < 36 && this.time >= z.nextAttack) {
+          z.nextAttack = this.time + 3.2;
+          const target = this.rand() < 0.75 ? lane : Math.floor(this.rand() * LANE_COUNT);
+          this.hazards.push({ id: this.nextId++, kind: 'acid', lane: target, z: this.playerZ + 9, len: 3.5, activeAt: this.time + 1.1, until: this.time + 4, done: false });
+          this.events.push({ type: 'warn', kind: 'acid', lane: target });
+        }
         continue;
       }
-      if (z.burnUntil > this.time) {
-        z.hp -= WEAPONS.flame.burn * dt;
-        if (z.hp <= 0) this.killZombie(z);
-      }
-      const d = ZOMBIES[z.kind];
-      if (z.kind === 'spitter') this.updateSpitter(z);
-      else if (z.kind !== 'boss' && z.kind !== 'thief' && z.z - this.playerZ < ENGAGE) z.z -= d.speed * dt;
-      if (z.kind === 'runner') {
-        if (z.switchAt < 0 && z.z - this.playerZ < 22 && z.z - this.playerZ > 6 && this.rand() < dt * 0.7) {
-          const to = z.lane + (this.rand() < 0.5 ? -1 : 1);
-          if (to >= 0 && to < LANE_COUNT) {
-            z.switchTo = to;
-            z.switchAt = this.time + 0.5; // segnale 0,5 s prima
-          }
+      if (dist < ACTIVE) z.z -= d.speed * slow * dt;
+      if (d.seeks) {
+        if (z.switchAt < 0 && z.lane !== lane && dist < 26 && dist > 6 && this.rand() < dt * 1.5) {
+          z.switchTo = z.lane + Math.sign(lane - z.lane);
+          z.switchAt = this.time + 0.5;
+          this.events.push({ type: 'warn', kind: 'seeker', lane: z.switchTo });
         }
         if (z.switchAt > 0 && this.time >= z.switchAt) {
           z.lane = z.switchTo;
           z.switchAt = -1;
         }
       }
-      z.x += (laneX(z.lane) - z.x) * Math.min(1, dt * 8);
-    }
-  }
-
-  private updateSpitter(z: Zombie) {
-    const dist = z.z - this.playerZ;
-    if (dist < 18) z.z = this.playerZ + 18; // resta a distanza, sul fondo della strada
-    if (dist < 34 && this.time >= z.nextAttack) {
-      z.nextAttack = this.time + 3;
-      const lane = this.rand() < 0.7 ? this.currentLane() : Math.floor(this.rand() * LANE_COUNT);
-      this.hazards.push({ id: this.nextId++, kind: 'acid', lane, z: this.playerZ + 9, len: 3, activeAt: this.time + 1, until: this.time + 3.5, hitPlayer: false });
-      this.events.push({ type: 'warn', kind: 'acid', lane });
+      const tx = laneX(z.lane) + z.dx;
+      z.x += (tx - z.x) * Math.min(1, dt * 6);
     }
   }
 
   private updateHazards() {
     for (const h of this.hazards) {
-      if (h.kind === 'shadow' && h.activeAt === Infinity && h.z - this.playerZ < 16) {
-        // l'ombra si allarga: lo zombie atterra fra 1,2 s
-        h.activeAt = this.time + 1.2;
-        h.until = h.activeAt + 0.1;
-        this.events.push({ type: 'warn', kind: 'shadow', lane: h.lane });
+      if (h.kind === 'shadow') {
+        if (h.activeAt === Infinity && h.z - this.playerZ < 18) {
+          h.activeAt = this.time + 1.2;
+          h.until = h.activeAt + 0.1;
+          this.events.push({ type: 'warn', kind: 'shadow', lane: h.lane });
+        }
+        if (!h.done && this.time >= h.activeAt) {
+          h.done = true;
+          const z = this.makeZombie(h.dropKind ?? 'walker', h.lane, h.z, 0);
+          this.zombies.push(z);
+        }
+        continue;
       }
-      if (h.kind === 'shadow' && this.time >= h.activeAt && h.until !== -1) {
-        const z = this.makeZombie(h.dropKind ?? 'walker', h.lane, h.z);
-        this.zombies.push(z);
-        h.until = -1;
-      }
-      if (h.kind === 'slam' && this.time >= h.activeAt && !h.hitPlayer) {
-        h.hitPlayer = true;
-        this.events.push({ type: 'slam', lane: h.lane, z: this.playerZ + 4 });
-        if (this.currentLane() === h.lane) this.hurt(30, 'Colpo del capo');
-        for (const c of this.companions) if (c.alive && c.lane === h.lane) this.hurtCompanion(c, 30);
-      }
-      if (h.kind === 'acid' && this.time >= h.activeAt && this.time < h.until && !h.hitPlayer) {
-        if (this.currentLane() === h.lane && Math.abs(this.playerZ - h.z) < h.len / 2 + 0.4) {
-          h.hitPlayer = true;
-          this.hurt(15, 'Acido');
+      if (h.done || this.time < h.activeAt) continue;
+      if (h.kind === 'slam') {
+        h.done = true;
+        this.events.push({ type: 'slam', lane: h.lane, z: this.playerZ + 3 });
+        if (this.lane === h.lane) this.lose(6, 'boss', laneX(h.lane));
+      } else if (h.kind === 'acid') {
+        if (this.time < h.until && this.lane === h.lane && Math.abs(this.playerZ - h.z) < h.len / 2 + 0.5) {
+          h.done = true;
+          this.lose(ZOMBIES.spitter.bite, 'acid', laneX(h.lane));
         }
       }
     }
@@ -649,108 +556,51 @@ export class RunSim {
 
   // ---------- contatti ----------
   private collide() {
-    const lane = this.currentLane();
-    const dashing = this.dashLeft > 0;
+    const lane = this.lane;
     for (const z of this.zombies) {
-      if (!z.alive || z.dropFrom || z.kind === 'boss' || z.kind === 'thief' || z.kind === 'spitter') continue;
-      const r = ZOMBIES[z.kind].radius;
-      if (Math.abs(z.z - this.playerZ) > 0.7 + r) continue;
-      if (z.lane === lane) {
-        if (!dashing) this.hurt(ZOMBIES[z.kind].contact, 'Zombie');
-        this.killZombie(z);
-        continue;
-      }
-      const c = this.companions.find((q) => q.alive && q.lane === z.lane);
-      if (c) {
-        this.hurtCompanion(c, z.kind === 'brute' ? 999 : ZOMBIES[z.kind].contact);
-        this.killZombie(z);
-      }
-    }
-    // zombie che raggiungono il blindato
-    if (this.escort) {
-      for (const z of this.zombies) {
-        if (!z.alive || z.lane !== this.escort.lane || z.kind === 'boss' || z.kind === 'spitter') continue;
-        if (Math.abs(z.z - this.escort.z) < 1.4) {
-          this.escort.hp -= ZOMBIES[z.kind].contact;
-          this.events.push({ type: 'escortHit' });
-          this.killZombie(z);
-        }
-      }
+      if (!z.alive || z.kind === 'boss' || z.kind === 'spitter' || z.dropAt > this.time || z.lane !== lane) continue;
+      if (Math.abs(z.z - this.playerZ) > 0.9 + ZOMBIES[z.kind].radius) continue;
+      const cause: LossCause = z.kind === 'walker' ? 'zombie' : (z.kind as LossCause);
+      this.lose(ZOMBIES[z.kind].bite, cause, z.x);
+      this.killZombie(z, true);
     }
     for (const o of this.objects) {
-      if (!o.alive || o.touched) continue;
-      if (Math.abs(o.z - this.playerZ) > 0.9 || o.kind === 'gate' || o.kind === 'medicine') continue;
-      const fenceOn = o.kind === 'fence' && (this.time + o.phase) % o.period < o.period / 2;
-      if (o.lane === lane) {
-        o.touched = true;
-        if (o.kind === 'barrel') {
-          if (!dashing) this.hurt(OBJECT_CONTACT.barrel, 'Barile');
-          this.openObject(o);
-        } else if (o.kind === 'fence') {
-          if (fenceOn && !dashing) this.hurt(OBJECT_CONTACT.fence, 'Recinzione elettrica');
-        } else if (OBJECT_CONTACT[o.kind] > 0) {
-          if (!dashing) this.hurt(OBJECT_CONTACT[o.kind], o.kind === 'car' ? 'Auto' : 'Barricata');
-          if (o.kind === 'barrier') {
-            o.alive = false;
-            this.events.push({ type: 'objectBroken', id: o.id, kind: o.kind, x: o.x, z: o.z, opened: false });
-          }
-        } else {
-          // passata senza aprirla: persa
-          o.alive = false;
-          this.events.push({ type: 'objectBroken', id: o.id, kind: o.kind, x: o.x, z: o.z, opened: false });
-        }
-      } else {
-        const c = this.companions.find((q) => q.alive && q.lane === o.lane);
-        if (c && OBJECT_CONTACT[o.kind] > 0 && (o.kind !== 'fence' || fenceOn)) {
-          o.touched = true;
-          this.hurtCompanion(c, OBJECT_CONTACT[o.kind]);
-        }
+      if (!o.alive || o.touched || o.kind === 'wall' || o.lane !== lane) continue;
+      if (Math.abs(o.z - this.playerZ) > 1.1) continue;
+      o.touched = true;
+      const def = OBJECTS[o.kind];
+      if (o.kind === 'explosive') {
+        this.openObject(o);
+        continue;
+      }
+      if (o.kind === 'trap') {
+        if (this.trapOn(o)) this.lose(def.contactLoss, 'trap', o.x);
+        continue;
+      }
+      if (def.contactLoss > 0) this.lose(def.contactLoss, o.kind === 'car' ? 'car' : o.kind === 'gate' ? 'gate' : 'object', o.x);
+      if (o.kind !== 'car') {
+        // l'oggetto intatto va perso: per prenderlo bisognava distruggerlo prima (§2 punto 5c)
+        o.alive = false;
+        this.stats.missed++;
+        this.events.push({ type: 'objectLost', id: o.id, kind: o.kind, x: o.x, z: o.z });
       }
     }
   }
 
-  private hurt(amount: number, reason: string) {
-    if (this.opts.invulnerable || this.dashLeft > 0 || this.over) return;
-    if (this.powers.shield > 0) {
-      this.powers.shield--;
-      this.events.push({ type: 'shieldBlock' });
-      return;
-    }
-    this.hp = Math.max(0, this.hp - amount);
-    this.events.push({ type: 'playerHurt', amount });
-    if (this.hp <= 0) this.finish(false, reason);
+  private lose(n: number, cause: LossCause, x: number) {
+    if (this.opts.invulnerable || this.over || n <= 0) return;
+    const lost = Math.min(this.squad, n);
+    this.squad -= lost;
+    this.stats.lost[cause] = (this.stats.lost[cause] ?? 0) + lost;
+    this.events.push({ type: 'soldiersLost', count: lost, cause, x });
+    if (this.squad <= 0) this.finish(false, cause);
   }
 
-  private hurtCompanion(c: Companion, amount: number) {
-    if (!c.alive || this.opts.invulnerable) return;
-    c.hp -= amount;
-    if (c.hp <= 0) {
-      c.alive = false;
-      this.companionsLost++;
-      this.events.push({ type: 'companionLost', id: c.id });
-    }
-  }
-
-  // ---------- fine livello ----------
   private checkEnd() {
-    if (this.over || this.opts.stressZombies) return;
-    const L = this.level;
-    if (this.escort && this.escort.hp <= 0) return this.finish(false, 'Il blindato è stato distrutto');
-    if (this.medicineState === 'lost') return this.finish(false, 'Le medicine sono andate perse');
-    if (L.type === 'inseguimento') {
-      if (this.thief && !this.thief.alive) return this.finish(true, 'Scorte recuperate');
-      if (this.playerZ >= L.length) return this.finish(false, 'Il ladro è scappato');
-      return;
-    }
-    if (L.finale.kind === 'boss') {
-      if (this.boss && !this.boss.alive) this.finish(true, 'Capo abbattuto');
-      return;
-    }
-    if (L.finale.kind === 'gate') {
-      if (this.gate && !this.gate.alive) this.finish(true, 'Strada aperta');
-      return;
-    }
-    if (this.playerZ >= L.length && (L.type !== 'recupero' || this.medicineState === 'opened')) this.finish(true, 'Arrivato');
+    if (this.over) return;
+    const F = this.level.finale;
+    if (F.kind === 'boss' && this.boss && !this.boss.alive) this.finish(true, 'Capo abbattuto');
+    if (F.kind === 'wall' && this.wall && !this.wall.alive) this.finish(true, 'Muro sfondato');
   }
 
   private finish(won: boolean, reason: string) {
@@ -762,10 +612,10 @@ export class RunSim {
 
   private cleanup() {
     const behind = this.playerZ - 7;
-    this.zombies = this.zombies.filter((z) => (z.alive ? z.z > behind : this.time - z.deadAt < 1.6));
+    this.zombies = this.zombies.filter((z) => (z.alive ? z.z > behind : this.time - z.deadAt < 1.4));
     this.objects = this.objects.filter((o) => o.alive && o.z > behind);
     this.bullets = this.bullets.filter((b) => b.alive);
-    this.hazards = this.hazards.filter((h) => h.until === Infinity || (h.until !== -1 && this.time < h.until + 0.3) || (h.kind === 'shadow' && h.until !== -1));
+    this.hazards = this.hazards.filter((h) => (h.kind === 'shadow' ? !h.done : !h.done || this.time < h.until + 0.3) && h.z > behind - 5);
   }
 
   drainEvents(): SimEvent[] {
@@ -774,3 +624,21 @@ export class RunSim {
     return e;
   }
 }
+
+/** Testi delle cause di sconfitta, per il risultato. */
+export const LOSS_TEXT: Record<LossCause, string> = {
+  zombie: 'Travolti dall’orda',
+  runner: 'Travolti dai Veloci',
+  dog: 'Sbranati dai cani',
+  armored: 'Travolti dai Corazzati',
+  giant: 'Schiacciati dal Gigante',
+  bloater: 'Esplosione di un Gonfio',
+  shield: 'Travolti dagli Scudati',
+  acid: 'Colpiti dall’acido',
+  boss: 'Colpo del capo',
+  explosion: 'Esplosione troppo vicina',
+  object: 'Barile non distrutto',
+  trap: 'Sega',
+  car: 'Schianto contro un’auto',
+  gate: 'Portone non abbattuto',
+};

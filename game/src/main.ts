@@ -3,14 +3,14 @@ import { RunSim, SimEvent } from './m1/sim';
 import { RunView } from './m1/view';
 import { LEVELS } from './m1/levels';
 import { LevelDef, validateLevel } from './m1/level';
-import { WEAPONS, POWERS } from './m1/defs';
+import { WEAPONS } from './m1/defs';
 import { bindLaneInput } from './input';
 import { runContactSheet } from './contact-sheet';
 import { CONFIG } from './config';
 import { audio } from './audio';
 import { loadProfile, saveProfile, recordResult } from './profile';
 import { showTitle, showLevels, showLoading, showPause, showResult, Hud } from './ui/screens';
-import { WEAPON_ICON, POWER_ICON, ICON } from './ui/icons';
+import { WEAPON_ICON, ICON } from './ui/icons';
 
 const params = new URLSearchParams(location.search);
 const canvas = document.getElementById('game') as HTMLCanvasElement;
@@ -40,7 +40,7 @@ bindLaneInput(
     if (!paused) sim?.moveLane(d);
   },
   () => {
-    if (!paused) sim?.dash();
+    if (!paused) sim?.airstrike();
   },
 );
 document.addEventListener('visibilitychange', () => {
@@ -53,12 +53,6 @@ engine.runRenderLoop(() => {
 
 if (params.get('view') === 'assets') {
   runContactSheet(engine, document.getElementById('hud')!);
-} else if (params.get('stress')) {
-  // prova di carico: ?stress=40&god=1
-  void startLevel(
-    { id: 0, name: 'Prova di carico', type: 'fuga', zone: 'Periferia', length: 1e9, speed: [6.5, 6.5], intro: 'Prova di prestazioni', events: [], finale: { kind: 'none' } },
-    Number(params.get('stress')),
-  );
 } else if (params.get('level')) {
   void startLevel(LEVELS[Math.max(0, Math.min(LEVELS.length - 1, Number(params.get('level')) - 1))]);
 } else {
@@ -87,19 +81,19 @@ function disposeRun() {
   paused = false;
 }
 
-async function startLevel(level: LevelDef, stress = 0) {
+async function startLevel(level: LevelDef) {
   disposeRun();
   current = level;
   const progress = showLoading(level.name);
   const v = new RunView(engine, level.zone);
   await v.load((d, t) => progress(d / t));
-  const s = new RunSim(level, { seed: (Date.now() & 0xffff) + level.id, invulnerable: params.get('god') === '1', stressZombies: stress || undefined, startAt: import.meta.env.DEV ? Number(params.get('at') ?? 0) : 0 });
+  const s = new RunSim(level, { seed: (Date.now() & 0xffff) + level.id, invulnerable: params.get('god') === '1', bonusSoldiers: Number(params.get('bonus') ?? 0) || undefined, startAt: import.meta.env.DEV ? Number(params.get('at') ?? 0) : 0 });
   view = v;
   sim = s;
-  hud = new Hud(level, pause, () => sim?.dash());
+  hud = new Hud(level, pause, () => sim?.airstrike());
   if (import.meta.env.DEV) Object.assign(window, { __scene: v.scene, __sim: () => sim });
   let dbg: HTMLElement | null = null;
-  if (params.get('debug') === '1' || stress > 0) {
+  if (params.get('debug') === '1') {
     dbg = document.createElement('div');
     dbg.className = 'debug';
     document.getElementById('hud')!.appendChild(dbg);
@@ -136,7 +130,7 @@ async function startLevel(level: LevelDef, stress = 0) {
       fpsAcc += dt;
       worst = Math.max(worst, dt);
       if (fpsAcc >= 0.5) {
-        dbg.textContent = `FPS ${Math.round(frames / fpsAcc)} (peggiore ${Math.round(worst * 1000)} ms)\nzombie ${s.zombies.filter((z) => z.alive).length}  qualità ${quality}\nbuild ${CONFIG.build}`;
+        dbg.textContent = `FPS ${Math.round(frames / fpsAcc)} (peggiore ${Math.round(worst * 1000)} ms)\nzombie ${s.zombies.filter((z) => z.alive).length}  squadra ${s.squad}  qualità ${quality}\nbuild ${CONFIG.build}`;
         frames = 0;
         fpsAcc = 0;
         worst = 0;
@@ -151,27 +145,23 @@ function toastFor(e: SimEvent) {
     case 'weapon':
       hud.toast(WEAPONS[e.weapon].name, 'good', WEAPON_ICON[e.weapon]);
       break;
-    case 'power':
-      hud.toast(POWERS[e.power], 'good', POWER_ICON[e.power]);
+    case 'freeze':
+      hud.toast('Orda congelata!', 'good');
       break;
-    case 'companionJoined':
-      hud.toast('Sopravvissuto salvato!', 'good', ICON.survivor);
-      break;
-    case 'companionLost':
-      hud.toast('Hai perso un compagno', 'bad', ICON.survivor);
+    case 'airstrikeReady':
+      hud.toast('Attacco aereo pronto', 'good', ICON.airstrike);
       break;
     case 'loot':
-      if (e.size === 'safe') hud.toast('Cassaforte aperta!', 'good', ICON.materials);
+      hud.toast('Cassaforte aperta!', 'good', ICON.materials);
+      break;
+    case 'warn':
+      if (e.kind === 'slam') hud.toast('Il capo colpisce! Cambia corsia', 'bad');
       break;
     case 'hint':
       hud.toast(e.text, 'info');
       break;
     case 'boss':
       hud.toast('Il capo dell’orda!', 'bad');
-      break;
-    case 'medicine':
-      if (e.state === 'appear') hud.toast('Le medicine! Aprile prima che scappino', 'info');
-      if (e.state === 'opened') hud.toast('Medicine recuperate!', 'good');
       break;
     default:
       break;
@@ -195,7 +185,7 @@ function finishLevel(level: LevelDef, s: RunSim) {
   const won = s.status === 'won';
   const previous = [...(profile.levels[level.id]?.starFlags ?? [false, false, false])] as [boolean, boolean, boolean];
   const flags = s.starFlags;
-  const { reward } = recordResult(profile, level.id, won, flags, s.lootBonus);
+  const { reward } = recordResult(profile, level.id, won, flags, s.safeOpened ? 0.5 : 0);
   const idx = LEVELS.findIndex((l) => l.id === level.id);
   showResult({
     won,
