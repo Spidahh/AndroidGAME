@@ -150,3 +150,7 @@ Le priorità e i test correttivi per M1, crescita città, economia, eventi, ads 
 
 ## Revisione V3 — economia interconnessa, miniere, chiavi e personaggi
 **[ECONOMIA-MINIERE-EROI-CHIAVI-V3.md](ECONOMIA-MINIERE-EROI-CHIAVI-V3.md)**: benchmark Last War / Whiteout / Last Z, struttura delle fonti e degli usi di ogni risorsa, miniera, generatore, officina, ricerca, reclutamento con chiavi/frammenti, progressione dei quartieri e simulazioni economiche da eseguire. **Sono proposte progettuali:** non sono già funzionalità del gioco.
+
+
+## MASTER V4 — Fonte aggiornata trasversale
+**[MASTER-PRODOTTO-BUSINESS-V4.md](MASTER-PRODOTTO-BUSINESS-V4.md)** è il riferimento più recente per divertimento, UI, asset, filiere, minigiochi, economia, monetizzazione, costi e verifiche. In caso di conflitto sul primo accesso prevale [CITTA-DA-ZERO-MASTER.md](CITTA-DA-ZERO-MASTER.md): si comincia da terreno senza edifici.
