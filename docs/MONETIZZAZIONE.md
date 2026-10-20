@@ -1,5 +1,7 @@
 # Monetizzazione — come guadagna Holdout City
 
+> **⚠ SUPERATO, in revisione (20/10/2026).** L'utente ha chiarito che gli acquisti devono essere pochi, migliorare le funzioni e mai servire a potenziarsi (GDD §0, R14). I pacchetti di risorse, il VIP con le risorse giornaliere e il pass con le risorse descritti qui **non valgono più**. Restano validi le ricerche di mercato, le regole legali e le fonti. La nuova strategia è in attesa di approvazione dell'utente.
+
 Versione 3.0 · 20 ottobre 2026. Documento canonico di ricavi, negozio, pubblicità, prezzi, misure e regole legali.
 Le cifre di mercato hanno la fonte e la data in §10. Le stime di ricavo sono **scenari con le ipotesi scritte**, non previsioni.
 

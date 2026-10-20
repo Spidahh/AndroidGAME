@@ -93,4 +93,5 @@ Formato: `data · tappa · stato · cosa è stato fatto · verifiche · prossimo
 | Data | Tappa | Stato | Note |
 |---|---|---|---|
 | 2026-10-20 | Piano v3.0 | Completato | Ambientazione zombie (Holdout City), stack web (Babylon.js + Capacitor), monetizzazione ibrida, roadmap. Documenti v2 in `archivio/v2` |
-| — | T0 | Da fare | Prossimo passo: creare `game/`, CI, deploy beta, scena di prova prestazioni, foglio asset |
+| 2026-10-20 | Design | In corso | L'utente ha bloccato la programmazione: prima va definito a fondo il gioco (R15). La monetizzazione va rifatta con pochi acquisti funzionali, senza potenza (R14) |
+| — | T0 | Bloccata | Non si parte finché l'utente non dà l'ok sul design completo |

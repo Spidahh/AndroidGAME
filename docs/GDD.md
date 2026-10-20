@@ -26,6 +26,8 @@ Questi punti vengono dall'utente e prevalgono su tutto il resto del documento.
 | R11 | Niente minigiochi di sole operazioni matematiche | §3 |
 | R12 | Ambientazione scelta dall'agente in base agli asset gratuiti; motore scelto dall'agente | §1, ASSET, TECNICA |
 | R13 | Tutto fatto al massimo, ricco e curato | Intero pacchetto |
+| R14 | (20/10/2026) Gli acquisti devono **differenziare il gioco dagli altri**: **pochi**, che migliorano funzioni o le fanno funzionare meglio, **mai acquisti che servono per potenziarsi davvero** | MONETIZZAZIONE, in revisione |
+| R15 | (20/10/2026) **Niente programmazione finché il gioco non è definito a fondo** | ROADMAP |
 
 **Definizione operativa di "non pay-to-win"** usata in tutto il progetto (interpretazione dell'agente, scritta qui perché verificabile):
 
