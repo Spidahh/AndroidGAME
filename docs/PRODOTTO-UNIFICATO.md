@@ -140,3 +140,7 @@ P5: PC, classifiche affidabili e PvP come espansioni da calcolare, non prerequis
 
 ## Revisione critica del 20/10/2026
 Le priorità e i test correttivi per M1, crescita città, economia, eventi, ads e marketing sono dettagliati in [AUDIT-MIGLIORAMENTI-2026-10-20.md](AUDIT-MIGLIORAMENTI-2026-10-20.md). Le osservazioni esterne vengono tenute separate dalle ipotesi di design: non considerare superati i criteri prima di prove reali.
+
+
+## Revisione di prodotto v2.0
+**[REVISIONE-SISTEMICA-2.md](REVISIONE-SISTEMICA-2.md)**: UX mobile per ogni schermata, loop di 3 minuti, equilibrio ricompense attive/AFK, specializzazioni, modalità, eventi, monetizzazione, acquisizione e gate di qualità. Parametri da testare, non implementazione completata.
