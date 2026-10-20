@@ -1,3 +1,5 @@
+> **AGGIORNAMENTO STRUTTURALE — CITY FIRST (20/10/2026).** La sequenza iniziale di questo documento («avvio diretto nel minigioco») è SUPERATA dalla decisione successiva dell'utente: **si parte con zero edifici e si costruisce l'accampamento prima di giocare M1**. Le regole aggiornate per città, superstiti, filiere, gestione attiva, sviluppo in insediamento e città sono in **[CITTA-DA-ZERO-MASTER.md](CITTA-DA-ZERO-MASTER.md)**. Questo documento rimane il riferimento per M1-M5, marketing, tecnica e monetizzazione non contraddittori.
+
 # HOLDOUT CITY — PRODOTTO UNICO, SPECIFICA INTEGRATA
 **Versione proposta 1.0 — 20 ottobre 2026**
 **Questo è il riferimento per sviluppare, bilanciare e vendere il gioco.** Conserva lo storico in docs/ e archivio/. Eventuali decisioni esplicite future dell'utente prevalgono. I valori numerici qui sono PARAMETRI DI PROVA, non verifiche già superate.
