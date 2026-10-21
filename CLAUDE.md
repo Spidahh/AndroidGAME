@@ -1,3 +1,5 @@
+> **STOP PRODUZIONE AUTOMATICA: il risultato corrente è stato respinto dall'utente (21/10/2026).** Prima di qualunque implementazione leggi [AGENTS.md](AGENTS.md) e i quattro file `docs/CODEX-00`–`03`. L'utente vuole qualità visiva premium e gameplay soddisfacente, non semplici funzionalità spuntate. Prima AUDIT con screenshot/video reali; vietato spacciare primitive/UI generate come asset finali o inventare contenuti per completare la checklist. Le vecchie istruzioni che ordinano genericamente di «prototipare, poi grafica» non autorizzano a presentare greybox come gioco. Il piano vecchio non è un'autorizzazione a proseguire.
+
 # Regole per le sessioni AI — AndroidGAME
 
 1. **Leggi prima** `git log --oneline -15`, `git status`, poi [docs/DECISIONI.md](docs/DECISIONI.md) e [docs/PROGETTO.md](docs/PROGETTO.md).
