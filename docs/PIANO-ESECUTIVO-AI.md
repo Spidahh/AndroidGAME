@@ -1,3 +1,5 @@
+> **ARCHIVIATO COME STUDIO — NON ESEGUIRE QUESTO DOCUMENTO COME PIANO.** Dal 23/10/2026 la fonte operativa è [PRODUZIONE-2-0-SPECIFICA-COMPLETA.md](PRODUZIONE-2-0-SPECIFICA-COMPLETA.md). Le intestazioni storiche «definitivo» presenti sotto sono superate. Il gioco attuale è stato respinto: prima audit visivo e gameplay, poi un nuovo target approvato. Non generare nuove funzioni seguendo liste e numeri storici.
+
 # HOLDOUT CITY — PIANO ESECUTIVO DEFINITIVO PER L'AI
 Versione 1.0 · 20 ottobre 2026 · **UNICA FONTE DI VERITÀ OPERATIVA**.
 Le decisioni esplicite dell'utente in docs/DECISIONI.md prevalgono. Questo documento chiude le alternative dei precedenti studi e sceglie un prodotto. I valori numerici sono impostazioni **iniziali da playtestare**, non risultati già dimostrati. Lo sviluppo va proposto/avviato solo quando autorizzato dall'utente; qui si definisce cosa realizzare.
